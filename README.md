@@ -102,7 +102,7 @@ def color_input(self, key: str, description: Optional[str] = None) -> QPushButto
 
 List of all widgets:
 ```python
-def label(self, label: str, bold: bool = False, size: int = 0) -> QLabel:
+def label(self, label: str, bold: bool = False, size: int = 0, multiline: bool = True) -> QLabel:
     # Text label. `size`: font size
 text = label
 def hlayout(self) -> "ConfigLayout":
