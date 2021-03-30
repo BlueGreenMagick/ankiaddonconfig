@@ -20,19 +20,14 @@ class ConfigManager:
     def load(self) -> None:
         "Loads config from disk"
         self._config = mw.addonManager.getConfig(__name__)
-        self.modified = False
 
-    def save(self, force: bool = False) -> None:
-        """Writes its config data to disk.
-        If `force` is `False`, config is only written to disk if it was modified since last load."""
-        if self.modified or force:
-            mw.addonManager.writeConfig(__name__, self._config)
-            self.modified = False
+    def save(self) -> None:
+        "Writes its config data to disk."
+        mw.addonManager.writeConfig(__name__, self._config)
 
     def load_defaults(self) -> None:
         "call .save() afterwards to restore defaults."
         self._config = copy.deepcopy(self._default)
-        self.modified = False
 
     def to_json(self) -> str:
         return json.dumps(self._config)
@@ -61,7 +56,6 @@ class ConfigManager:
         return self.get_from_dict(self._default, key)
 
     def set(self, key: str, value: Any) -> None:
-        self.modified = True
         levels = key.split('.')
         conf_obj = self._config
         for i in range(len(levels) - 1):
@@ -76,7 +70,6 @@ class ConfigManager:
         conf_obj[levels[-1]] = value
 
     def pop(self, key: str) -> Any:
-        self.modified = True
         levels = key.split('.')
         conf_obj = self._config
         for i in range(len(levels) - 1):
