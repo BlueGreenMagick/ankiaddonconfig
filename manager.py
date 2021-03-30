@@ -57,7 +57,7 @@ class ConfigManager:
         except KeyError:
             return default
 
-    def get_default_value(self, key: str) -> Any:
+    def get_default(self, key: str) -> Any:
         return self.get_from_dict(self._default, key)
 
     def set(self, key: str, value: Any) -> None:
