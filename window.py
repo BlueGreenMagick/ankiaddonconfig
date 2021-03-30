@@ -1,6 +1,7 @@
 from typing import Callable, List, TYPE_CHECKING, Optional
 
 import aqt
+import aqt.addons
 from aqt import mw
 from aqt.qt import *
 from aqt.utils import tooltip, showText
@@ -10,13 +11,16 @@ from .errors import InvalidConfigValueError
 if TYPE_CHECKING:
     from .manager import ConfigManager
 
+addon_dir = aqt.addons.addonFromModule(__name__)
+addon_name = aqt.addons.addon_meta(addon_dir).human_name()
+
 
 class ConfigWindow(QDialog):
     def __init__(self, conf: "ConfigManager") -> None:
         QDialog.__init__(self, mw, Qt.Window)  # type: ignore
         self.conf = conf
         self.mgr = mw.addonManager
-        self.setWindowTitle("Config for Edit Field During Review (Cloze)")
+        self.setWindowTitle(f"Config for {addon_name}")
         self.setAttribute(Qt.WA_DeleteOnClose)
         self.widget_updates: List[Callable[[], None]] = []
         self._on_save_hook: List[Callable[[], None]] = []
@@ -109,7 +113,7 @@ class ConfigWindow(QDialog):
         self.update_widgets()
 
     def advanced_window(self) -> aqt.addons.ConfigEditor:
-        return aqt.addons.ConfigEditor(self, __name__, self.conf._config)
+        return aqt.addons.ConfigEditor(self, addon_dir, self.conf._config)
 
     def closeEvent(self, evt: QCloseEvent) -> None:
         # Discard the contents when clicked cancel,
