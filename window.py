@@ -119,8 +119,11 @@ class ConfigWindow(QDialog):
 
     # Add Widgets
 
-    def add_tab(self, name: str, widget: QWidget = None) -> "ConfigLayout":
+    def add_tab(self, name: str) -> "ConfigLayout":
         tab = QWidget(self)
+        tab.conf = self.conf  # type: ignore
+        tab.config_window = self  # type: ignore
+        tab.widget_updates = self.widget_updates  # type: ignore
         layout = ConfigLayout(tab, QBoxLayout.TopToBottom)
         tab.setLayout(layout)
         self.main_tab.addTab(tab, name)
