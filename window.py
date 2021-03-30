@@ -211,6 +211,7 @@ class ConfigLayout(QBoxLayout):
             if not isinstance(val, str):
                 raise InvalidConfigValueError(key, "string", val)
             line_edit.setText(val)
+            line_edit.setCursorPosition(0)
         self.widget_updates.append(update)
 
         line_edit.textChanged.connect(
