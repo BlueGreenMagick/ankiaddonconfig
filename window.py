@@ -1,4 +1,4 @@
-from typing import Callable, List, TYPE_CHECKING
+from typing import Callable, List, TYPE_CHECKING, Optional
 
 import aqt
 from aqt import mw
@@ -166,9 +166,11 @@ class ConfigLayout(QBoxLayout):
         self.addWidget(label_widget)
         return label_widget
 
+    text = label
+
     # Config Input Widgets
 
-    def checkbox(self, key: str, label: str = "") -> QCheckBox:
+    def checkbox(self, key: str, description: str = "") -> QCheckBox:
         "For boolean config"
         checkbox = QCheckBox()
 
@@ -179,14 +181,14 @@ class ConfigLayout(QBoxLayout):
             checkbox.setChecked(value)
         self.widget_updates.append(update)
 
-        if label:
-            checkbox.setText(label)
+        if description:
+            checkbox.setText(description)
         checkbox.stateChanged.connect(
             lambda s: self.conf.set(key, s == Qt.Checked))
         self.addWidget(checkbox)
         return checkbox
 
-    def dropdown(self, key: str, labels: list, values: list) -> QComboBox:
+    def dropdown(self, key: str, labels: list, values: list, description: Optional[str] = None) -> QComboBox:
         combobox = QComboBox()
         combobox.insertItems(0, labels)
 
@@ -203,10 +205,17 @@ class ConfigLayout(QBoxLayout):
 
         combobox.currentIndexChanged.connect(
             lambda idx: self.conf.set(key, values[idx]))
-        self.addWidget(combobox)
+
+        if description is not None:
+            row = self.hlayout()
+            row.label(description)
+            row.addWidget(combobox)
+        else:
+            self.addWidget(combobox)
+
         return combobox
 
-    def text_input(self, key: str) -> QLineEdit:
+    def text_input(self, key: str, description: Optional[str] = None) -> QLineEdit:
         "For string config"
         line_edit = QLineEdit()
 
@@ -219,10 +228,16 @@ class ConfigLayout(QBoxLayout):
 
         line_edit.textChanged.connect(
             lambda text: self.conf.set(key, text))
-        self.addWidget(line_edit)
+
+        if description is not None:
+            row = self.hlayout()
+            row.label(description)
+            row.addWidget(line_edit)
+        else:
+            self.addWidget(line_edit)
         return line_edit
 
-    def color_input(self, key: str) -> QPushButton:
+    def color_input(self, key: str, description: Optional[str] = None) -> QPushButton:
         "For hex color config"
         button = QPushButton()
         button.setFixedWidth(25)
@@ -253,7 +268,13 @@ class ConfigLayout(QBoxLayout):
         color_dialog.colorSelected.connect(lambda color: save(color))
         button.clicked.connect(lambda _: color_dialog.exec_())
 
-        self.addWidget(button)
+        if description is not None:
+            row = self.hlayout()
+            row.label(description)
+            row.addWidget(button)
+        else:
+            self.addWidget(button)
+
         return button
 
     # Layout widgets
