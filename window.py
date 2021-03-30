@@ -11,21 +11,18 @@ from .errors import InvalidConfigValueError
 if TYPE_CHECKING:
     from .manager import ConfigManager
 
-addon_dir = aqt.addons.addonFromModule(__name__)
-addon_name = aqt.addons.addon_meta(addon_dir).human_name()
-
 
 class ConfigWindow(QDialog):
     def __init__(self, conf: "ConfigManager") -> None:
         QDialog.__init__(self, mw, Qt.Window)  # type: ignore
         self.conf = conf
         self.mgr = mw.addonManager
-        self.setWindowTitle(f"Config for {addon_name}")
+        self.setWindowTitle(f"Config for {conf.addon_name}")
         self.setAttribute(Qt.WA_DeleteOnClose)
         self.widget_updates: List[Callable[[], None]] = []
         self._on_save_hook: List[Callable[[], None]] = []
         self.setup()
-        restoreGeom(self, f"addonconfig-{addon_name}")
+        restoreGeom(self, f"addonconfig-{conf.addon_name}")
 
     def setup(self) -> None:
         self.main_layout = QVBoxLayout()
@@ -114,13 +111,13 @@ class ConfigWindow(QDialog):
         self.update_widgets()
 
     def advanced_window(self) -> aqt.addons.ConfigEditor:
-        return aqt.addons.ConfigEditor(self, addon_dir, self.conf._config)
+        return aqt.addons.ConfigEditor(self, self.conf.addon_dir, self.conf._config)
 
     def closeEvent(self, evt: QCloseEvent) -> None:
         # Discard the contents when clicked cancel,
         # and also in case the window was clicked without clicking any of the buttons
         self.conf.load()
-        saveGeom(self, f"addonconfig-{addon_name}")
+        saveGeom(self, f"addonconfig-{self.conf.addon_name}")
         evt.accept()
 
     # Add Widgets

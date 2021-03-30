@@ -14,6 +14,8 @@ class ConfigManager:
         self.config_tabs: List[Callable] = []
         self._config: Optional[Dict] = None
         addon_dir = mw.addonManager.addonFromModule(__name__)
+        self.addon_dir = addon_dir
+        self.addon_name = mw.addonManager.addon_meta(addon_dir).human_name()
         self._default = mw.addonManager.addonConfigDefaults(addon_dir)
         self.load()
 
