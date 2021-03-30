@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 
 
 class ConfigWindow(QDialog):
-    def __init__(self, conf: ConfigManager) -> None:
+    def __init__(self, conf: "ConfigManager") -> None:
         QDialog.__init__(self, mw, Qt.Window)  # type: ignore
         self.conf = conf
         self.mgr = mw.addonManager
