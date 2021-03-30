@@ -4,7 +4,7 @@ import aqt
 import aqt.addons
 from aqt import mw
 from aqt.qt import *
-from aqt.utils import tooltip, showText
+from aqt.utils import tooltip, showText, saveGeom, restoreGeom
 
 from .errors import InvalidConfigValueError
 
@@ -25,6 +25,7 @@ class ConfigWindow(QDialog):
         self.widget_updates: List[Callable[[], None]] = []
         self._on_save_hook: List[Callable[[], None]] = []
         self.setup()
+        restoreGeom(self, f"addonconfig-{addon_name}")
 
     def setup(self) -> None:
         self.main_layout = QVBoxLayout()
@@ -119,6 +120,7 @@ class ConfigWindow(QDialog):
         # Discard the contents when clicked cancel,
         # and also in case the window was clicked without clicking any of the buttons
         self.conf.load()
+        saveGeom(self, f"addonconfig-{addon_name}")
         evt.accept()
 
     # Add Widgets
