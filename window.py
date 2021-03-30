@@ -119,31 +119,15 @@ class ConfigWindow(QDialog):
 
     # Add Widgets
 
-    def add_tab(self, name: str, widget: QWidget = None) -> "ConfigTab":
-        tab = ConfigTab(self)
+    def add_tab(self, name: str, widget: QWidget = None) -> "ConfigLayout":
+        tab = QWidget(self)
+        layout = ConfigLayout(tab, QBoxLayout.TopToBottom)
+        tab.setLayout(layout)
         self.main_tab.addTab(tab, name)
-        return tab
+        return layout
 
     def execute_on_save(self, hook: Callable[[], None]) -> None:
         self._on_save_hook.append(hook)
-
-
-class ConfigTab(QWidget):
-    def __init__(self, window: ConfigWindow):
-        QWidget.__init__(self, window)
-        self.config_window = window
-        self.conf = self.config_window.conf
-        self.widget_updates = window.widget_updates
-
-    def hlayout(self) -> "ConfigLayout":
-        layout = ConfigLayout(self, QBoxLayout.LeftToRight)
-        self.setLayout(layout)
-        return layout
-
-    def vlayout(self) -> "ConfigLayout":
-        layout = ConfigLayout(self, QBoxLayout.TopToBottom)
-        self.setLayout(layout)
-        return layout
 
 
 class ConfigLayout(QBoxLayout):
