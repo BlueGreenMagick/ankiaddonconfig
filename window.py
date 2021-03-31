@@ -236,17 +236,25 @@ class ConfigLayout(QBoxLayout):
             self.addWidget(line_edit)
         return line_edit
 
-    def number_input(self, key: str, description: Optional[str] = None, minimum: int = 0, maximum: int = 99, step: int = 1) -> QSpinBox:
+    def number_input(self, key: str, description: Optional[str] = None,
+                     minimum: int = 0, maximum: int = 99, step: int = 1,
+                     decimal: bool = False, precision: int = 2) -> QSpinBox:
         "For integer config"
-        spin_box = QSpinBox()
+        if decimal:
+            spin_box = QDoubleSpinBox()
+            spin_box.setDecimals(precision)
+        else:
+            spin_box = QSpinBox()
         spin_box.setMinimum(minimum)
         spin_box.setMaximum(maximum)
         spin_box.setSingleStep(step)
 
         def update() -> None:
             val = self.conf.get(key)
-            if not isinstance(val, int):
+            if not decimal and not isinstance(val, int):
                 raise InvalidConfigValueError(key, "integer number", val)
+            if decimal and not isinstance(val, (int, float)):
+                raise InvalidConfigValueError(key, "number", val)
             if minimum is not None and val < minimum:
                 raise InvalidConfigValueError(
                     key, f"integer number greater or equal to {minimum}", val)
