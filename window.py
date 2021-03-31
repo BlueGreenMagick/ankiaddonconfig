@@ -204,6 +204,7 @@ class ConfigLayout(QBoxLayout):
         if description is not None:
             row = self.hlayout()
             row.label(description)
+            row.space(7)
             row.addWidget(combobox)
             row.stretch()
         else:
@@ -229,6 +230,7 @@ class ConfigLayout(QBoxLayout):
         if description is not None:
             row = self.hlayout()
             row.label(description)
+            row.space(7)
             row.addWidget(line_edit)
         else:
             self.addWidget(line_edit)
@@ -268,6 +270,7 @@ class ConfigLayout(QBoxLayout):
         if description is not None:
             row = self.hlayout()
             row.label(description)
+            row.space(7)
             row.addWidget(button)
             row.stretch()
         else:
@@ -281,6 +284,7 @@ class ConfigLayout(QBoxLayout):
         row = self.hlayout()
         if description:
             row.text(description)
+            row.space(7)
         line_edit = QLineEdit()
         line_edit.setReadOnly(True)
         row.addWidget(line_edit)
