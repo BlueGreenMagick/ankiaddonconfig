@@ -144,8 +144,8 @@ class ConfigLayout(QBoxLayout):
         self.config_window = parent.config_window
         self.widget_updates = parent.widget_updates
 
-    def label(self, label: str, bold: bool = False, html: bool = False, size: int = 0, multiline: bool = True) -> QLabel:
-        label_widget = QLabel(label)
+    def text(self, text: str, bold: bool = False, html: bool = False, size: int = 0, multiline: bool = True) -> QLabel:
+        label_widget = QLabel(text)
         if html:
             label_widget.setTextFormat(Qt.RichText)
         if bold or size:
@@ -160,8 +160,6 @@ class ConfigLayout(QBoxLayout):
 
         self.addWidget(label_widget)
         return label_widget
-
-    text = label
 
     # Config Input Widgets
 
@@ -203,7 +201,7 @@ class ConfigLayout(QBoxLayout):
 
         if description is not None:
             row = self.hlayout()
-            row.label(description)
+            row.text(description)
             row.space(7)
             row.addWidget(combobox)
             row.stretch()
@@ -229,7 +227,7 @@ class ConfigLayout(QBoxLayout):
 
         if description is not None:
             row = self.hlayout()
-            row.label(description)
+            row.text(description)
             row.space(7)
             row.addWidget(line_edit)
         else:
@@ -270,7 +268,7 @@ class ConfigLayout(QBoxLayout):
 
         if description is not None:
             row = self.hlayout()
-            row.label(description)
+            row.text(description)
             row.space(7)
             row.addWidget(spin_box)
             row.stretch()
@@ -311,7 +309,7 @@ class ConfigLayout(QBoxLayout):
 
         if description is not None:
             row = self.hlayout()
-            row.label(description)
+            row.text(description)
             row.space(7)
             row.addWidget(button)
             row.stretch()
