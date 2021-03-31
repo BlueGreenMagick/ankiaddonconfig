@@ -144,7 +144,7 @@ class ConfigLayout(QBoxLayout):
         self.config_window = parent.config_window
         self.widget_updates = parent.widget_updates
 
-    def text(self, text: str, bold: bool = False, html: bool = False, size: int = 0, multiline: bool = True) -> QLabel:
+    def text(self, text: str, bold: bool = False, html: bool = False, size: int = 0, multiline: bool = False) -> QLabel:
         label_widget = QLabel(text)
         if html:
             label_widget.setTextFormat(Qt.RichText)
