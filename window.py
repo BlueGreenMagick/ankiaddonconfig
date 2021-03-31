@@ -205,6 +205,7 @@ class ConfigLayout(QBoxLayout):
             row = self.hlayout()
             row.label(description)
             row.addWidget(combobox)
+            row.stretch()
         else:
             self.addWidget(combobox)
 
