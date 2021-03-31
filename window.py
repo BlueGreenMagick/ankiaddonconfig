@@ -236,6 +236,40 @@ class ConfigLayout(QBoxLayout):
             self.addWidget(line_edit)
         return line_edit
 
+    def number_input(self, key: str, description: Optional[str] = None, minimum: int = 0, maximum: int = 99, step: int = 1) -> QSpinBox:
+        "For integer config"
+        spin_box = QSpinBox()
+        spin_box.setMinimum(minimum)
+        spin_box.setMaximum(maximum)
+        spin_box.setSingleStep(step)
+
+        def update() -> None:
+            val = self.conf.get(key)
+            if not isinstance(val, int):
+                raise InvalidConfigValueError(key, "integer number", val)
+            if minimum is not None and val < minimum:
+                raise InvalidConfigValueError(
+                    key, f"integer number greater or equal to {minimum}", val)
+            if maximum is not None and val > maximum:
+                raise InvalidConfigValueError(
+                    key, f"integer number lesser or equal to {maximum}", val)
+            spin_box.setValue(val)
+
+        self.widget_updates.append(update)
+
+        spin_box.valueChanged.connect(
+            lambda val: self.conf.set(key, val))
+
+        if description is not None:
+            row = self.hlayout()
+            row.label(description)
+            row.space(7)
+            row.addWidget(spin_box)
+            row.stretch()
+        else:
+            self.addWidget(spin_box)
+        return spin_box
+
     def color_input(self, key: str, description: Optional[str] = None) -> QPushButton:
         "For hex color config"
         button = QPushButton()
