@@ -1,4 +1,5 @@
 from typing import Callable, List, TYPE_CHECKING, Optional
+from pathlib import Path
 
 import aqt
 import aqt.addons
@@ -272,6 +273,46 @@ class ConfigLayout(QBoxLayout):
             self.addWidget(button)
 
         return button
+
+    def path_input(self, key: str, description: Optional[str] = None, get_directory: bool = False, filter="Any files (*)") -> "ConfigLayout":
+        "For path string config"
+
+        row = self.hlayout()
+        if description:
+            row.text(description)
+        line_edit = QLineEdit()
+        line_edit.setReadOnly(True)
+        row.addWidget(line_edit)
+        button = QPushButton("Browse")
+        row.addWidget(button)
+
+        row.path_button = button
+        row.path_text = line_edit
+
+        def update() -> None:
+            val = self.conf.get(key)
+            if not isinstance(val, str):
+                raise InvalidConfigValueError(key, "string file path", val)
+            line_edit.setText(val)
+
+        def get_path() -> None:
+            val = self.conf.get(key)
+            parent_dir = str(Path(val).parent)
+
+            if get_directory:
+                path = QFileDialog.getExistingDirectory(
+                    self.config_window, directory=parent_dir)
+            else:
+                path = QFileDialog.getOpenFileName(
+                    self.config_window, directory=parent_dir, filter=filter)[0]
+            if path:  # is None if cancelled
+                self.conf.set(key, path)
+                update()
+
+        self.widget_updates.append(update)
+        button.clicked.connect(get_path)
+
+        return row
 
     # Layout widgets
 
