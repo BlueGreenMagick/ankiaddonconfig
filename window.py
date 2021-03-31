@@ -1,4 +1,4 @@
-from typing import Callable, List, TYPE_CHECKING, Optional
+from typing import Callable, List, Tuple, TYPE_CHECKING, Optional
 from pathlib import Path
 
 import aqt
@@ -278,7 +278,7 @@ class ConfigLayout(QBoxLayout):
 
         return button
 
-    def path_input(self, key: str, description: Optional[str] = None, get_directory: bool = False, filter="Any files (*)") -> "ConfigLayout":
+    def path_input(self, key: str, description: Optional[str] = None, get_directory: bool = False, filter="Any files (*)") -> Tuple[QLineEdit, QPushButton]:
         "For path string config"
 
         row = self.hlayout()
@@ -290,9 +290,6 @@ class ConfigLayout(QBoxLayout):
         row.addWidget(line_edit)
         button = QPushButton("Browse")
         row.addWidget(button)
-
-        row.path_button = button
-        row.path_text = line_edit
 
         def update() -> None:
             val = self.conf.get(key)
@@ -317,7 +314,7 @@ class ConfigLayout(QBoxLayout):
         self.widget_updates.append(update)
         button.clicked.connect(get_path)
 
-        return row
+        return (line_edit, button)
 
     # Layout widgets
 
