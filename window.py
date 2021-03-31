@@ -267,6 +267,7 @@ class ConfigLayout(QBoxLayout):
             row = self.hlayout()
             row.label(description)
             row.addWidget(button)
+            row.stretch()
         else:
             self.addWidget(button)
 
