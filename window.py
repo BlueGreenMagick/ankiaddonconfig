@@ -152,6 +152,7 @@ class ConfigLayout(QBoxLayout):
         html: bool = False,
         size: int = 0,
         multiline: bool = False,
+        tooltip: Optional[str] = None,
     ) -> QLabel:
         label_widget = QLabel(text)
         if html:
@@ -165,15 +166,23 @@ class ConfigLayout(QBoxLayout):
             label_widget.setFont(font)
         if multiline:
             label_widget.setWordWrap(True)
+        if tooltip is not None:
+            label_widget.setToolTip(tooltip)
 
         self.addWidget(label_widget)
         return label_widget
 
     # Config Input Widgets
 
-    def checkbox(self, key: str, description: str = "") -> QCheckBox:
+    def checkbox(
+        self, key: str, description: Optional[str] = None, tooltip: Optional[str] = None
+    ) -> QCheckBox:
         "For boolean config"
         checkbox = QCheckBox()
+        if description is not None:
+            checkbox.setText(description)
+        if tooltip is not None:
+            checkbox.setToolTip(tooltip)
 
         def update() -> None:
             value = self.conf.get(key)
@@ -183,18 +192,22 @@ class ConfigLayout(QBoxLayout):
 
         self.widget_updates.append(update)
 
-        if description:
-            checkbox.setText(description)
-        checkbox.stateChanged.connect(
-            lambda s: self.conf.set(key, s == Qt.Checked))
+        checkbox.stateChanged.connect(lambda s: self.conf.set(key, s == Qt.Checked))
         self.addWidget(checkbox)
         return checkbox
 
     def dropdown(
-        self, key: str, labels: list, values: list, description: Optional[str] = None
+        self,
+        key: str,
+        labels: list,
+        values: list,
+        description: Optional[str] = None,
+        tooltip: Optional[str] = None,
     ) -> QComboBox:
         combobox = QComboBox()
         combobox.insertItems(0, labels)
+        if tooltip is not None:
+            combobox.setToolTip(tooltip)
 
         def update() -> None:
             conf = self.conf
@@ -215,7 +228,7 @@ class ConfigLayout(QBoxLayout):
 
         if description is not None:
             row = self.hlayout()
-            row.text(description)
+            row.text(description, tooltip=tooltip)
             row.space(7)
             row.addWidget(combobox)
             row.stretch()
@@ -224,9 +237,13 @@ class ConfigLayout(QBoxLayout):
 
         return combobox
 
-    def text_input(self, key: str, description: Optional[str] = None) -> QLineEdit:
+    def text_input(
+        self, key: str, description: Optional[str] = None, tooltip: Optional[str] = None
+    ) -> QLineEdit:
         "For string config"
         line_edit = QLineEdit()
+        if tooltip is not None:
+            line_edit.setToolTip(tooltip)
 
         def update() -> None:
             val = self.conf.get(key)
@@ -241,7 +258,7 @@ class ConfigLayout(QBoxLayout):
 
         if description is not None:
             row = self.hlayout()
-            row.text(description)
+            row.text(description, tooltip=tooltip)
             row.space(7)
             row.addWidget(line_edit)
         else:
@@ -252,6 +269,7 @@ class ConfigLayout(QBoxLayout):
         self,
         key: str,
         description: Optional[str] = None,
+        tooltip: Optional[str] = None,
         minimum: int = 0,
         maximum: int = 99,
         step: int = 1,
@@ -265,6 +283,8 @@ class ConfigLayout(QBoxLayout):
             spin_box.setDecimals(precision)
         else:
             spin_box = QSpinBox()
+        if tooltip is not None:
+            spin_box.setToolTip(tooltip)
         spin_box.setMinimum(minimum)
         spin_box.setMaximum(maximum)
         spin_box.setSingleStep(step)
@@ -291,7 +311,7 @@ class ConfigLayout(QBoxLayout):
 
         if description is not None:
             row = self.hlayout()
-            row.text(description)
+            row.text(description, tooltip=tooltip)
             row.space(7)
             row.addWidget(spin_box)
             row.stretch()
@@ -299,11 +319,15 @@ class ConfigLayout(QBoxLayout):
             self.addWidget(spin_box)
         return spin_box
 
-    def color_input(self, key: str, description: Optional[str] = None) -> QPushButton:
+    def color_input(
+        self, key: str, description: Optional[str] = None, tooltip: Optional[str] = None
+    ) -> QPushButton:
         "For hex color config"
         button = QPushButton()
         button.setFixedWidth(25)
         button.setFixedHeight(25)
+        if tooltip is not None:
+            button.setToolTip(tooltip)
 
         color_dialog = QColorDialog(self.config_window)
 
@@ -333,7 +357,7 @@ class ConfigLayout(QBoxLayout):
 
         if description is not None:
             row = self.hlayout()
-            row.text(description)
+            row.text(description, tooltip=tooltip)
             row.space(7)
             row.addWidget(button)
             row.stretch()
@@ -346,20 +370,23 @@ class ConfigLayout(QBoxLayout):
         self,
         key: str,
         description: Optional[str] = None,
+        tooltip: Optional[str] = None,
         get_directory: bool = False,
         filter: str = "Any files (*)",
     ) -> Tuple[QLineEdit, QPushButton]:
         "For path string config"
 
         row = self.hlayout()
-        if description:
-            row.text(description)
+        if description is not None:
+            row.text(description, tooltip=tooltip)
             row.space(7)
         line_edit = QLineEdit()
         line_edit.setReadOnly(True)
         row.addWidget(line_edit)
         button = QPushButton("Browse")
         row.addWidget(button)
+        if tooltip is not None:
+            line_edit.setToolTip(tooltip)
 
         def update() -> None:
             val = self.conf.get(key)
