@@ -97,6 +97,12 @@ class ConfigManager:
     def __delitem__(self, key: str) -> Any:
         self.pop(key)
 
+    def __contains__(self, key: str) -> bool:
+        try:
+            self.get_from_dict(self._config, key)
+            return True
+        except KeyError:
+            return False
         # Config Window
 
     def use_custom_window(self) -> None:
