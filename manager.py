@@ -36,7 +36,7 @@ class ConfigManager:
 
     def get_from_dict(self, dict_obj: dict, key: str) -> Any:
         "Raises KeyError if config doesn't exist"
-        levels = key.split('.')
+        levels = key.split(".")
         return_val = dict_obj
         for level in levels:
             if isinstance(return_val, list):
@@ -58,7 +58,7 @@ class ConfigManager:
         return self.get_from_dict(self._default, key)
 
     def set(self, key: str, value: Any) -> None:
-        levels = key.split('.')
+        levels = key.split(".")
         conf_obj = self._config
         for i in range(len(levels) - 1):
             level = levels[i]
@@ -72,7 +72,7 @@ class ConfigManager:
         conf_obj[levels[-1]] = value
 
     def pop(self, key: str) -> Any:
-        levels = key.split('.')
+        levels = key.split(".")
         conf_obj = self._config
         for i in range(len(levels) - 1):
             level = levels[i]
@@ -114,6 +114,7 @@ class ConfigManager:
             config_window.exec_()
             self.config_window = config_window
             return True
+
         mw.addonManager.setConfigAction(__name__, open_config)
 
     def add_config_tab(self, tab: Callable[["ConfigWindow"], None]) -> None:

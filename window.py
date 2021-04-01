@@ -72,7 +72,8 @@ class ConfigWindow(QDialog):
                 + str(e),
                 title="Invalid Config",
                 parent=advanced,
-                run=False)
+                run=False,
+            )
             button = QPushButton("Quit Config")
             bbox.addButton(button, QDialogButtonBox.DestructiveRole)
             bbox.button(QDialogButtonBox.Close).setDefault(True)
@@ -144,7 +145,14 @@ class ConfigLayout(QBoxLayout):
         self.config_window = parent.config_window
         self.widget_updates = parent.widget_updates
 
-    def text(self, text: str, bold: bool = False, html: bool = False, size: int = 0, multiline: bool = False) -> QLabel:
+    def text(
+        self,
+        text: str,
+        bold: bool = False,
+        html: bool = False,
+        size: int = 0,
+        multiline: bool = False,
+    ) -> QLabel:
         label_widget = QLabel(text)
         if html:
             label_widget.setTextFormat(Qt.RichText)
@@ -172,6 +180,7 @@ class ConfigLayout(QBoxLayout):
             if not isinstance(value, bool):
                 raise InvalidConfigValueError(key, "boolean", value)
             checkbox.setChecked(value)
+
         self.widget_updates.append(update)
 
         if description:
@@ -181,7 +190,9 @@ class ConfigLayout(QBoxLayout):
         self.addWidget(checkbox)
         return checkbox
 
-    def dropdown(self, key: str, labels: list, values: list, description: Optional[str] = None) -> QComboBox:
+    def dropdown(
+        self, key: str, labels: list, values: list, description: Optional[str] = None
+    ) -> QComboBox:
         combobox = QComboBox()
         combobox.insertItems(0, labels)
 
@@ -192,12 +203,15 @@ class ConfigLayout(QBoxLayout):
                 index = values.index(val)
             except:
                 raise InvalidConfigValueError(
-                    key, "any value in list " + str(values), val)
+                    key, "any value in list " + str(values), val
+                )
             combobox.setCurrentIndex(index)
+
         self.widget_updates.append(update)
 
         combobox.currentIndexChanged.connect(
-            lambda idx: self.conf.set(key, values[idx]))
+            lambda idx: self.conf.set(key, values[idx])
+        )
 
         if description is not None:
             row = self.hlayout()
@@ -220,10 +234,10 @@ class ConfigLayout(QBoxLayout):
                 raise InvalidConfigValueError(key, "string", val)
             line_edit.setText(val)
             line_edit.setCursorPosition(0)
+
         self.widget_updates.append(update)
 
-        line_edit.textChanged.connect(
-            lambda text: self.conf.set(key, text))
+        line_edit.textChanged.connect(lambda text: self.conf.set(key, text))
 
         if description is not None:
             row = self.hlayout()
@@ -234,10 +248,18 @@ class ConfigLayout(QBoxLayout):
             self.addWidget(line_edit)
         return line_edit
 
-    def number_input(self, key: str, description: Optional[str] = None,
-                     minimum: int = 0, maximum: int = 99, step: int = 1,
-                     decimal: bool = False, precision: int = 2) -> QSpinBox:
+    def number_input(
+        self,
+        key: str,
+        description: Optional[str] = None,
+        minimum: int = 0,
+        maximum: int = 99,
+        step: int = 1,
+        decimal: bool = False,
+        precision: int = 2,
+    ) -> QAbstractSpinBox:
         "For integer config"
+        spin_box: QAbstractSpinBox
         if decimal:
             spin_box = QDoubleSpinBox()
             spin_box.setDecimals(precision)
@@ -255,16 +277,17 @@ class ConfigLayout(QBoxLayout):
                 raise InvalidConfigValueError(key, "number", val)
             if minimum is not None and val < minimum:
                 raise InvalidConfigValueError(
-                    key, f"integer number greater or equal to {minimum}", val)
+                    key, f"integer number greater or equal to {minimum}", val
+                )
             if maximum is not None and val > maximum:
                 raise InvalidConfigValueError(
-                    key, f"integer number lesser or equal to {maximum}", val)
+                    key, f"integer number lesser or equal to {maximum}", val
+                )
             spin_box.setValue(val)
 
         self.widget_updates.append(update)
 
-        spin_box.valueChanged.connect(
-            lambda val: self.conf.set(key, val))
+        spin_box.valueChanged.connect(lambda val: self.conf.set(key, val))
 
         if description is not None:
             row = self.hlayout()
@@ -286,7 +309,8 @@ class ConfigLayout(QBoxLayout):
 
         def set_color(rgb: str) -> None:
             button.setStyleSheet(
-                "QPushButton{ background-color: \"%s\"; border: none; border-radius: 3px}" % rgb
+                'QPushButton{ background-color: "%s"; border: none; border-radius: 3px}'
+                % rgb
             )
             color = QColor()
             color.setNamedColor(rgb)
@@ -318,7 +342,13 @@ class ConfigLayout(QBoxLayout):
 
         return button
 
-    def path_input(self, key: str, description: Optional[str] = None, get_directory: bool = False, filter="Any files (*)") -> Tuple[QLineEdit, QPushButton]:
+    def path_input(
+        self,
+        key: str,
+        description: Optional[str] = None,
+        get_directory: bool = False,
+        filter: str = "Any files (*)",
+    ) -> Tuple[QLineEdit, QPushButton]:
         "For path string config"
 
         row = self.hlayout()
@@ -343,10 +373,12 @@ class ConfigLayout(QBoxLayout):
 
             if get_directory:
                 path = QFileDialog.getExistingDirectory(
-                    self.config_window, directory=parent_dir)
+                    self.config_window, directory=parent_dir
+                )
             else:
                 path = QFileDialog.getOpenFileName(
-                    self.config_window, directory=parent_dir, filter=filter)[0]
+                    self.config_window, directory=parent_dir, filter=filter
+                )[0]
             if path:  # is None if cancelled
                 self.conf.set(key, path)
                 update()
@@ -374,7 +406,9 @@ class ConfigLayout(QBoxLayout):
         self.addLayout(layout)
         return layout
 
-    def scroll_layout(self, horizontal: bool = True, vertical: bool = True) -> "ConfigLayout":
+    def scroll_layout(
+        self, horizontal: bool = True, vertical: bool = True
+    ) -> "ConfigLayout":
         layout = ConfigLayout(self, QBoxLayout.TopToBottom)
         inner_widget = QWidget()
         inner_widget.setLayout(layout)

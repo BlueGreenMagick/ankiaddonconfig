@@ -65,7 +65,7 @@ def text_input(self, key: str, description: Optional[str] = None) -> QLineEdit:
     assert isinstance(conf[key], str)
 def number_input(self, key: str, description: Optional[str] = None,
                      minimum: int = 0, maximum: int = 99, step: int = 1,
-                     decimal: bool = False, precision: int = 2) -> QSpinBox:
+                     decimal: bool = False, precision: int = 2) -> QSpinBox | QDoubleSpinBox:
     if decimal:
         assert isinstance(conf[key], int | bool)
     else:
