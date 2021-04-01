@@ -1,27 +1,11 @@
 # ankiaddonconfig
 
-This package was born out of a desire to make creating a gui config window as painless as possible. You can also use it as a shorthand to manage the config as well.
+This package was born out of a desire to make creating a gui config window as painless as possible. You can also use it as a shorthand to manage the config as well. To use this package, download(clone) the repo and put it in your addon.
 
-## Installing with Git Submodule
-To use this package, run the following command. (Where `.` is the directory you want to install this package in)
-
-```bash
-git submodule add https://github.com/BlueGreenMagick/ankiaddonconfig.git .
-```
-
-When you want to pull the changes made in this repo, run the below command.
-```bash
-git submodule update --remote --recursive
-```
-
-You may also want to instruct people that after cloning your project, they will need to run the following line.
-```bash
-git submodule update --init
-```
 ## Creating a custom config window
 
 ```python
-from ankiaddon import ConfigManager, ConfigWindow
+from .ankiaddonconfig import ConfigManager, ConfigWindow
 
 conf = ConfigManager()
 
@@ -123,3 +107,12 @@ conf.get_default("fruit") # returns the value set in config.json
 conf.to_json() # returns a json copy of the config
 conf.clone() # returns a deepcopy of the config dictionary
 ```
+
+## Contributing
+
+Please run mypy and black before creating a pull request. You may need to run `python -m pip install aqt PyQt5-stubs` for mypy checks to work.
+```
+python -m mypy --no-strict-optional --disallow-untyped-defs .
+python -m black .
+```
+
