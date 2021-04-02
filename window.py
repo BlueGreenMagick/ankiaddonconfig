@@ -26,9 +26,11 @@ class ConfigWindow(QDialog):
         restoreGeom(self, f"addonconfig-{conf.addon_name}")
 
     def setup(self) -> None:
+        self.outer_layout = QVBoxLayout()
         self.main_layout = QVBoxLayout()
         main_layout = self.main_layout
-        self.setLayout(main_layout)
+        self.outer_layout.addLayout(main_layout)
+        self.setLayout(self.outer_layout)
 
         self.main_tab = QTabWidget()
         main_tab = self.main_tab
@@ -59,7 +61,7 @@ class ConfigWindow(QDialog):
         save_btn.clicked.connect(self.on_save)
         btn_box.addWidget(save_btn)
 
-        self.main_layout.addLayout(btn_box)
+        self.outer_layout.addLayout(btn_box)
 
     def update_widgets(self) -> None:
         try:
@@ -137,6 +139,28 @@ class ConfigWindow(QDialog):
     def execute_on_save(self, hook: Callable[[], None]) -> None:
         self._on_save_hook.append(hook)
 
+    def set_footer(
+        self,
+        text: str,
+        html: bool = False,
+        size: int = 0,
+        multiline: bool = False,
+        tooltip: Optional[str] = None,
+    ) -> QLabel:
+        footer = QLabel(text)
+        if html:
+            footer.setTextFormat(Qt.RichText)
+        if size:
+            font = QFont()
+            font.setPixelSize(size)
+            footer.setFont(font)
+        if multiline:
+            footer.setWordWrap(True)
+        if tooltip is not None:
+            footer.setToolTip(tooltip)
+
+        self.main_layout.addWidget(footer)
+
 
 class ConfigLayout(QBoxLayout):
     def __init__(self, parent: QObject, direction: QBoxLayout.Direction):
@@ -192,7 +216,8 @@ class ConfigLayout(QBoxLayout):
 
         self.widget_updates.append(update)
 
-        checkbox.stateChanged.connect(lambda s: self.conf.set(key, s == Qt.Checked))
+        checkbox.stateChanged.connect(
+            lambda s: self.conf.set(key, s == Qt.Checked))
         self.addWidget(checkbox)
         return checkbox
 
