@@ -11,7 +11,7 @@ from .window import ConfigWindow
 class ConfigManager:
     def __init__(self) -> None:
         self.config_window: Optional[ConfigWindow] = None
-        self.config_tabs: List[Callable] = []
+        self.window_open_hook: List[Callable[[ConfigWindow], None]] = []
         self._config: Optional[Dict] = None
         addon_dir = mw.addonManager.addonFromModule(__name__)
         self.addon_dir = addon_dir
@@ -103,13 +103,14 @@ class ConfigManager:
             return True
         except KeyError:
             return False
-        # Config Window
+
+    # Config Window
 
     def use_custom_window(self) -> None:
         def open_config() -> bool:
             config_window = ConfigWindow(self)
-            for tab in self.config_tabs:
-                tab(config_window)
+            for fn in self.window_open_hook:
+                fn(config_window)
             config_window.on_open()
             config_window.exec_()
             self.config_window = config_window
@@ -117,5 +118,7 @@ class ConfigManager:
 
         mw.addonManager.setConfigAction(__name__, open_config)
 
-    def add_config_tab(self, tab: Callable[["ConfigWindow"], None]) -> None:
-        self.config_tabs.append(tab)
+    def on_window_open(self, fn: Callable[["ConfigWindow"], None]) -> None:
+        self.window_open_hook.append(fn)
+
+    add_config_tab = on_window_open
