@@ -160,6 +160,7 @@ class ConfigWindow(QDialog):
             footer.setToolTip(tooltip)
 
         self.main_layout.addWidget(footer)
+        return footer
 
 
 class ConfigLayout(QBoxLayout):
