@@ -183,6 +183,7 @@ class ConfigLayout(QBoxLayout):
         tooltip: Optional[str] = None,
     ) -> QLabel:
         label_widget = QLabel(text)
+        label_widget.setTextInteractionFlags(Qt.TextBrowserInteraction)
         if html:
             label_widget.setTextFormat(Qt.RichText)
             label_widget.setOpenExternalLinks(True)
