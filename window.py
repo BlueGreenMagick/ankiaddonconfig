@@ -150,6 +150,9 @@ class ConfigWindow(QDialog):
         footer = QLabel(text)
         if html:
             footer.setTextFormat(Qt.RichText)
+            footer.setOpenExternalLinks(True)
+        else:
+            footer.setTextFormat(Qt.PlainText)
         if size:
             font = QFont()
             font.setPixelSize(size)
@@ -182,6 +185,9 @@ class ConfigLayout(QBoxLayout):
         label_widget = QLabel(text)
         if html:
             label_widget.setTextFormat(Qt.RichText)
+            label_widget.setOpenExternalLinks(True)
+        else:
+            label_widget.setTextFormat(Qt.PlainText)
         if bold or size:
             font = QFont()
             if bold:
