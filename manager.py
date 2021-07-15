@@ -69,7 +69,10 @@ class ConfigManager:
             except KeyError:
                 conf_obj[level] = {}
                 conf_obj = conf_obj[level]
-        conf_obj[levels[-1]] = value
+        level = levels[-1]
+        if isinstance(conf_obj, list):
+            level = int(level)
+        conf_obj[level] = value
 
     def pop(self, key: str) -> Any:
         levels = key.split(".")
