@@ -109,17 +109,17 @@ class ConfigManager:
 
     # Config Window
 
-    def use_custom_window(self) -> None:
-        def open_config() -> bool:
-            config_window = ConfigWindow(self)
-            for fn in self.window_open_hook:
-                fn(config_window)
-            config_window.on_open()
-            config_window.exec_()
-            self.config_window = config_window
-            return True
+    def open_config(self) -> bool:
+        config_window = ConfigWindow(self)
+        for fn in self.window_open_hook:
+            fn(config_window)
+        config_window.on_open()
+        config_window.exec_()
+        self.config_window = config_window
+        return True
 
-        mw.addonManager.setConfigAction(__name__, open_config)
+    def use_custom_window(self) -> None:
+        mw.addonManager.setConfigAction(__name__, self.open_config)
 
     def on_window_open(self, fn: Callable[["ConfigWindow"], None]) -> None:
         self.window_open_hook.append(fn)
