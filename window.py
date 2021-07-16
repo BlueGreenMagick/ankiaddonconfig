@@ -359,6 +359,7 @@ class ConfigLayout(QBoxLayout):
         button = QPushButton()
         button.setFixedWidth(25)
         button.setFixedHeight(25)
+        button.setCursor(QCursor(Qt.PointingHandCursor))
         if tooltip is not None:
             button.setToolTip(tooltip)
 
