@@ -247,7 +247,7 @@ class ConfigLayout(QBoxLayout):
             try:
                 val = conf.get(key)
                 index = values.index(val)
-            except:
+            except ValueError:
                 raise InvalidConfigValueError(
                     key, "any value in list " + str(values), val
                 )
