@@ -12,7 +12,7 @@ class ConfigManager:
     def __init__(self) -> None:
         self.config_window: Optional[ConfigWindow] = None
         self.window_open_hook: List[Callable[[ConfigWindow], None]] = []
-        self._config: Optional[Dict] = None
+        self._config: Dict
         addon_dir = mw.addonManager.addonFromModule(__name__)
         self.addon_dir = addon_dir
         self.addon_name = mw.addonManager.addon_meta(addon_dir).human_name()

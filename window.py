@@ -115,7 +115,9 @@ class ConfigWindow(QDialog):
         self.update_widgets()
 
     def advanced_window(self) -> aqt.addons.ConfigEditor:
-        return aqt.addons.ConfigEditor(self, self.conf.addon_dir, self.conf._config)
+        return aqt.addons.ConfigEditor(
+            self, self.conf.addon_dir, self.conf._config  # type: ignore
+        )
 
     def closeEvent(self, evt: QCloseEvent) -> None:
         # Discard the contents when clicked cancel,
