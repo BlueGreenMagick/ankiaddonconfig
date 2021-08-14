@@ -130,10 +130,7 @@ class ConfigWindow(QDialog):
 
     def add_tab(self, name: str) -> "ConfigLayout":
         tab = QWidget(self)
-        tab.conf = self.conf  # type: ignore
-        tab.config_window = self  # type: ignore
-        tab.widget_updates = self.widget_updates  # type: ignore
-        layout = ConfigLayout(tab, QBoxLayout.TopToBottom)
+        layout = ConfigLayout(self, QBoxLayout.TopToBottom)
         tab.setLayout(layout)
         self.main_tab.addTab(tab, name)
         return layout
@@ -169,11 +166,11 @@ class ConfigWindow(QDialog):
 
 
 class ConfigLayout(QBoxLayout):
-    def __init__(self, parent: QObject, direction: QBoxLayout.Direction):
+    def __init__(self, conf_window: ConfigWindow, direction: QBoxLayout.Direction):
         QBoxLayout.__init__(self, direction)
-        self.conf = parent.conf
-        self.config_window = parent.config_window
-        self.widget_updates = parent.widget_updates
+        self.conf = conf_window.conf
+        self.config_window = conf_window
+        self.widget_updates = conf_window.widget_updates
 
     def text(
         self,
@@ -226,8 +223,7 @@ class ConfigLayout(QBoxLayout):
 
         self.widget_updates.append(update)
 
-        checkbox.stateChanged.connect(
-            lambda s: self.conf.set(key, s == Qt.Checked))
+        checkbox.stateChanged.connect(lambda s: self.conf.set(key, s == Qt.Checked))
         self.addWidget(checkbox)
         return checkbox
 
@@ -460,19 +456,19 @@ class ConfigLayout(QBoxLayout):
         self.addStretch(factor)
 
     def hlayout(self) -> "ConfigLayout":
-        layout = ConfigLayout(self, QBoxLayout.LeftToRight)
+        layout = ConfigLayout(self.config_window, QBoxLayout.LeftToRight)
         self.addLayout(layout)
         return layout
 
     def vlayout(self) -> "ConfigLayout":
-        layout = ConfigLayout(self, QBoxLayout.TopToBottom)
+        layout = ConfigLayout(self.config_window, QBoxLayout.TopToBottom)
         self.addLayout(layout)
         return layout
 
     def scroll_layout(
         self, horizontal: bool = True, vertical: bool = True
     ) -> "ConfigLayout":
-        layout = ConfigLayout(self, QBoxLayout.TopToBottom)
+        layout = ConfigLayout(self.config_window, QBoxLayout.TopToBottom)
         inner_widget = QWidget()
         inner_widget.setLayout(layout)
         scroll = QScrollArea()
