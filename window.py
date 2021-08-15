@@ -128,11 +128,32 @@ class ConfigWindow(QDialog):
 
     # Add Widgets
 
-    def add_tab(self, name: str) -> "ConfigLayout":
-        tab = QWidget(self)
-        layout = ConfigLayout(self, QBoxLayout.TopToBottom)
-        tab.setLayout(layout)
-        self.main_tab.addTab(tab, name)
+    def add_tab(
+        self, name: str, hscroll: bool = False, vscroll: bool = False
+    ) -> "ConfigLayout":
+        if hscroll or vscroll:
+            layout = ConfigLayout(self, QBoxLayout.TopToBottom)
+            inner_widget = QWidget(self)
+            inner_widget.setLayout(layout)
+            scroll = QScrollArea(self)
+            scroll.setWidgetResizable(True)
+            scroll.setWidget(inner_widget)
+            scroll.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+            if not hscroll:
+                scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+            if not vscroll:
+                scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+            # Fix background colors and border
+            inner_widget.parentWidget().setAutoFillBackground(False)
+            inner_widget.setAutoFillBackground(False)
+            scroll.setObjectName("tabScrollArea")
+            scroll.setStyleSheet("QWidget#tabScrollArea { border: none; }")
+            self.main_tab.addTab(scroll, name)
+        else:
+            tab = QWidget(self)
+            layout = ConfigLayout(self, QBoxLayout.TopToBottom)
+            tab.setLayout(layout)
+            self.main_tab.addTab(tab, name)
         return layout
 
     def execute_on_save(self, hook: Callable[[], None]) -> None:
@@ -474,9 +495,10 @@ class ConfigLayout(QBoxLayout):
         scroll = QScrollArea()
         scroll.setWidgetResizable(True)
         scroll.setWidget(inner_widget)
-        scroll.setSizePolicy(
-            QSizePolicy.Expanding if horizontal else QSizePolicy.Minimum,
-            QSizePolicy.Expanding if vertical else QSizePolicy.Minimum,
-        )
+        scroll.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        if not horizontal:
+            scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        if not vertical:
+            scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.addWidget(scroll)
         return layout
