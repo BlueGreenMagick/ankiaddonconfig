@@ -80,18 +80,6 @@ def vlayout(self) -> "ConfigLayout":
 def scroll_layout(self, horizontal: bool = True, vertical: bool = True) -> "ConfigLayout":
     # Scrollable layout
 ```
-
-## ConfigWindow
-
-```python
-def add_tab(self, name: str, hscroll: bool = False, vscroll: bool = False) -> "ConfigLayout":
-    # hscroll: horizontal scroll, vscroll: vertical scroll
-def execute_on_save(self, hook: Callable[[], None]) -> None:
-    # All functions passed is executed on save
-def set_footer(self, text: str, ...) -> None:
-    # Below config tab, above buttons.
-```
-
 ## Using ConfigManager
 ```python
 from .ankiaddon import ConfigManager
