@@ -22,6 +22,7 @@ class ConfigWindow(QDialog):
         self.setAttribute(Qt.WA_DeleteOnClose)
         self.widget_updates: List[Callable[[], None]] = []
         self._on_save_hook: List[Callable[[], None]] = []
+        self._on_close_hook: List[Callable[[], None]] = []
         self.setup()
         restoreGeom(self, f"addonconfig-{conf.addon_name}")
 
@@ -122,6 +123,8 @@ class ConfigWindow(QDialog):
     def closeEvent(self, evt: QCloseEvent) -> None:
         # Discard the contents when clicked cancel,
         # and also in case the window was clicked without clicking any of the buttons
+        for hook in self._on_close_hook:
+            hook()
         self.conf.load()
         saveGeom(self, f"addonconfig-{self.conf.addon_name}")
         evt.accept()
@@ -137,6 +140,9 @@ class ConfigWindow(QDialog):
 
     def execute_on_save(self, hook: Callable[[], None]) -> None:
         self._on_save_hook.append(hook)
+
+    def execute_on_close(self, hook: Callable[[], None]) -> None:
+        self._on_close_hook.append(hook)
 
     def set_footer(
         self,
