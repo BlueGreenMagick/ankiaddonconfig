@@ -209,6 +209,34 @@ class ConfigLayout(QBoxLayout):
         self.addWidget(label_widget)
         return label_widget
 
+    def text_button(
+        self,
+        text: str,
+        tooltip: str = "",
+        on_click: Optional[Callable[[str], None]] = None,
+        color: str = "",
+        size: int = 0,
+        url: str = "/",
+    ) -> QLabel:
+        """A QLabel that behaves like a button.
+
+        on_click is provided 1 argument: 'url'.
+        """
+        css = "text-decoration: none;"
+        if color:
+            css += f" color: {color};"
+        if size:
+            css += f" font-size: {size}px;"
+        label = QLabel(f'<a href="{url}" style="{css}">{text}</a>')
+        label.setTextFormat(Qt.RichText)
+        if tooltip:
+            label.setToolTip(tooltip)
+        if on_click:
+            label.linkActivated.connect(on_click)
+
+        self.addWidget(label)
+        return label
+
     # Config Input Widgets
 
     def checkbox(
