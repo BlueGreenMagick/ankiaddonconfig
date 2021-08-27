@@ -249,6 +249,28 @@ class ConfigLayout(QBoxLayout):
         self.addWidget(line)
         return line
 
+    def hcontainer(self) -> QWidget:
+        """Adds an empty QWidget that has a ConfigLayout as its layout.
+
+        You can access its inner layout using QWidget.layout()
+        """
+        container = QWidget()
+        inner_layout = ConfigLayout(self.config_window, QBoxLayout.LeftToRight)
+        container.setLayout(inner_layout)
+        self.addWidget(container)
+        return container
+
+    def vcontainer(self) -> QWidget:
+        """Adds an empty QWidget that has a ConfigLayout as its layout.
+
+        You can access its inner layout using QWidget.layout()
+        """
+        container = QWidget()
+        inner_layout = ConfigLayout(self.config_window, QBoxLayout.TopToBottom)
+        container.setLayout(inner_layout)
+        self.addWidget(container)
+        return container
+
     # Config Input Widgets
 
     def checkbox(
