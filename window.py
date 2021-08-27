@@ -176,101 +176,6 @@ class ConfigLayout(QBoxLayout):
         self.config_window = conf_window
         self.widget_updates = conf_window.widget_updates
 
-    def text(
-        self,
-        text: str,
-        bold: bool = False,
-        html: bool = False,
-        size: int = 0,
-        multiline: bool = False,
-        tooltip: Optional[str] = None,
-    ) -> QLabel:
-        label_widget = QLabel(text)
-        label_widget.setTextInteractionFlags(Qt.TextBrowserInteraction)
-        if html:
-            label_widget.setTextFormat(Qt.RichText)
-            label_widget.setOpenExternalLinks(True)
-        else:
-            label_widget.setTextFormat(Qt.PlainText)
-        if bold or size:
-            font = QFont()
-            if bold:
-                font.setBold(True)
-            if size:
-                font.setPixelSize(size)
-            label_widget.setFont(font)
-        if multiline:
-            label_widget.setWordWrap(True)
-        if tooltip is not None:
-            label_widget.setToolTip(tooltip)
-
-        self.addWidget(label_widget)
-        return label_widget
-
-    def text_button(
-        self,
-        text: str,
-        tooltip: str = "",
-        on_click: Optional[Callable[[str], None]] = None,
-        color: str = "",
-        size: int = 0,
-        url: str = "/",
-    ) -> QLabel:
-        """A QLabel that behaves like a button.
-
-        on_click is provided 1 argument: 'url'.
-        """
-        css = "text-decoration: none;"
-        if color:
-            css += f" color: {color};"
-        if size:
-            css += f" font-size: {size}px;"
-        label = QLabel(f'<a href="{url}" style="{css}">{text}</a>')
-        label.setTextFormat(Qt.RichText)
-        if tooltip:
-            label.setToolTip(tooltip)
-        if on_click:
-            label.linkActivated.connect(on_click)
-
-        self.addWidget(label)
-        return label
-
-    def hseparator(self) -> QFrame:
-        line = QFrame()
-        line.setFrameShape(QFrame.HLine)
-        line.setFrameShadow(QFrame.Plain)
-        self.addWidget(line)
-        return line
-
-    def vseparator(self) -> QFrame:
-        line = QFrame()
-        line.setFrameShape(QFrame.VLine)
-        line.setFrameShadow(QFrame.Plain)
-        self.addWidget(line)
-        return line
-
-    def hcontainer(self) -> QWidget:
-        """Adds an empty QWidget that has a ConfigLayout as its layout.
-
-        You can access its inner layout using QWidget.layout()
-        """
-        container = QWidget()
-        inner_layout = ConfigLayout(self.config_window, QBoxLayout.LeftToRight)
-        container.setLayout(inner_layout)
-        self.addWidget(container)
-        return container
-
-    def vcontainer(self) -> QWidget:
-        """Adds an empty QWidget that has a ConfigLayout as its layout.
-
-        You can access its inner layout using QWidget.layout()
-        """
-        container = QWidget()
-        inner_layout = ConfigLayout(self.config_window, QBoxLayout.TopToBottom)
-        container.setLayout(inner_layout)
-        self.addWidget(container)
-        return container
-
     # Config Input Widgets
 
     def checkbox(
@@ -517,11 +422,100 @@ class ConfigLayout(QBoxLayout):
 
     # Layout widgets
 
-    def space(self, space: int = 1) -> None:
-        self.addSpacing(space)
+    def text(
+        self,
+        text: str,
+        bold: bool = False,
+        html: bool = False,
+        size: int = 0,
+        multiline: bool = False,
+        tooltip: Optional[str] = None,
+    ) -> QLabel:
+        label_widget = QLabel(text)
+        label_widget.setTextInteractionFlags(Qt.TextBrowserInteraction)
+        if html:
+            label_widget.setTextFormat(Qt.RichText)
+            label_widget.setOpenExternalLinks(True)
+        else:
+            label_widget.setTextFormat(Qt.PlainText)
+        if bold or size:
+            font = QFont()
+            if bold:
+                font.setBold(True)
+            if size:
+                font.setPixelSize(size)
+            label_widget.setFont(font)
+        if multiline:
+            label_widget.setWordWrap(True)
+        if tooltip is not None:
+            label_widget.setToolTip(tooltip)
 
-    def stretch(self, factor: int = 0) -> None:
-        self.addStretch(factor)
+        self.addWidget(label_widget)
+        return label_widget
+
+    def text_button(
+        self,
+        text: str,
+        tooltip: str = "",
+        on_click: Optional[Callable[[str], None]] = None,
+        color: str = "",
+        size: int = 0,
+        url: str = "/",
+    ) -> QLabel:
+        """A QLabel that behaves like a button.
+
+        on_click is provided 1 argument: 'url'.
+        """
+        css = "text-decoration: none;"
+        if color:
+            css += f" color: {color};"
+        if size:
+            css += f" font-size: {size}px;"
+        label = QLabel(f'<a href="{url}" style="{css}">{text}</a>')
+        label.setTextFormat(Qt.RichText)
+        if tooltip:
+            label.setToolTip(tooltip)
+        if on_click:
+            label.linkActivated.connect(on_click)
+
+        self.addWidget(label)
+        return label
+
+    def hseparator(self) -> QFrame:
+        line = QFrame()
+        line.setFrameShape(QFrame.HLine)
+        line.setFrameShadow(QFrame.Plain)
+        self.addWidget(line)
+        return line
+
+    def vseparator(self) -> QFrame:
+        line = QFrame()
+        line.setFrameShape(QFrame.VLine)
+        line.setFrameShadow(QFrame.Plain)
+        self.addWidget(line)
+        return line
+
+    def hcontainer(self) -> QWidget:
+        """Adds an empty QWidget that has a ConfigLayout as its layout.
+
+        You can access its inner layout using QWidget.layout()
+        """
+        container = QWidget()
+        inner_layout = ConfigLayout(self.config_window, QBoxLayout.LeftToRight)
+        container.setLayout(inner_layout)
+        self.addWidget(container)
+        return container
+
+    def vcontainer(self) -> QWidget:
+        """Adds an empty QWidget that has a ConfigLayout as its layout.
+
+        You can access its inner layout using QWidget.layout()
+        """
+        container = QWidget()
+        inner_layout = ConfigLayout(self.config_window, QBoxLayout.TopToBottom)
+        container.setLayout(inner_layout)
+        self.addWidget(container)
+        return container
 
     def hlayout(self) -> "ConfigLayout":
         layout = ConfigLayout(self.config_window, QBoxLayout.LeftToRight)
@@ -532,6 +526,12 @@ class ConfigLayout(QBoxLayout):
         layout = ConfigLayout(self.config_window, QBoxLayout.TopToBottom)
         self.addLayout(layout)
         return layout
+
+    def space(self, space: int = 1) -> None:
+        self.addSpacing(space)
+
+    def stretch(self, factor: int = 0) -> None:
+        self.addStretch(factor)
 
     def scroll_layout(
         self, horizontal: bool = True, vertical: bool = True
