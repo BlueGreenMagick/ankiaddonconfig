@@ -27,9 +27,9 @@ class ConfigWindow(QDialog):
         restoreGeom(self, f"addonconfig-{conf.addon_name}")
 
     def setup(self) -> None:
-        self.outer_layout = QVBoxLayout()
-        self.main_layout = QVBoxLayout()
-        self.btn_layout = QHBoxLayout()
+        self.outer_layout = ConfigLayout(self, QBoxLayout.TopToBottom)
+        self.main_layout = ConfigLayout(self, QBoxLayout.TopToBottom)
+        self.btn_layout = ConfigLayout(self, QBoxLayout.LeftToRight)
         self.outer_layout.addLayout(self.main_layout)
         self.outer_layout.addLayout(self.btn_layout)
         self.setLayout(self.outer_layout)
@@ -40,7 +40,7 @@ class ConfigWindow(QDialog):
         self.main_layout.addWidget(main_tab)
         self.setup_buttons(self.btn_layout)
 
-    def setup_buttons(self, btn_box: QHBoxLayout) -> None:
+    def setup_buttons(self, btn_box: "ConfigLayout") -> None:
 
         advanced_btn = QPushButton("Advanced")
         advanced_btn.clicked.connect(self.on_advanced)
