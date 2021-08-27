@@ -29,18 +29,18 @@ class ConfigWindow(QDialog):
     def setup(self) -> None:
         self.outer_layout = QVBoxLayout()
         self.main_layout = QVBoxLayout()
-        main_layout = self.main_layout
-        self.outer_layout.addLayout(main_layout)
+        self.btn_layout = QHBoxLayout()
+        self.outer_layout.addLayout(self.main_layout)
+        self.outer_layout.addLayout(self.btn_layout)
         self.setLayout(self.outer_layout)
 
         self.main_tab = QTabWidget()
         main_tab = self.main_tab
         main_tab.setFocusPolicy(Qt.StrongFocus)
-        main_layout.addWidget(main_tab)
-        self.setup_buttons()
+        self.main_layout.addWidget(main_tab)
+        self.setup_buttons(self.btn_layout)
 
-    def setup_buttons(self) -> None:
-        btn_box = QHBoxLayout()
+    def setup_buttons(self, btn_box: QHBoxLayout) -> None:
 
         advanced_btn = QPushButton("Advanced")
         advanced_btn.clicked.connect(self.on_advanced)
@@ -61,8 +61,6 @@ class ConfigWindow(QDialog):
         save_btn.setShortcut("Ctrl+Return")
         save_btn.clicked.connect(self.on_save)
         btn_box.addWidget(save_btn)
-
-        self.outer_layout.addLayout(btn_box)
 
     def update_widgets(self) -> None:
         try:
