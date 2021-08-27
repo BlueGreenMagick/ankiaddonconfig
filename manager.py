@@ -111,11 +111,11 @@ class ConfigManager:
 
     def open_config(self) -> bool:
         config_window = ConfigWindow(self)
+        self.config_window = config_window
         for fn in self.window_open_hook:
             fn(config_window)
         config_window.on_open()
         config_window.exec_()
-        self.config_window = config_window
         return True
 
     def use_custom_window(self) -> None:
