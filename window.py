@@ -496,23 +496,23 @@ class ConfigLayout(QBoxLayout):
     def vseparator(self) -> QFrame:
         return self._separator(QFrame.VLine)
 
-    def _container(self, direction: QBoxLayout.Direction) -> QWidget:
-        """Adds an empty QWidget that has a ConfigLayout set as its layout.
+    def _container(self, direction: QBoxLayout.Direction) -> "ConfigLayout":
+        """Adds (empty) QWidget > ConfigLayout.
 
-        You can access its inner layout using QWidget.layout()
+        You can access its parent widget using ConfigLayout.parentWidget()
         """
         container = QWidget()
         inner_layout = ConfigLayout(self.config_window, direction)
         container.setLayout(inner_layout)
         self.addWidget(container)
-        return container
+        return inner_layout
 
-    def hcontainer(self) -> QWidget:
-        """Adds an empty QWidget that has a ConfigLayout set as its layout."""
+    def hcontainer(self) -> "ConfigLayout":
+        """Adds (empty) QWidget > ConfigLayout."""
         return self._container(QBoxLayout.RightToLeft)
 
-    def vcontainer(self) -> QWidget:
-        """Adds an empty QWidget that has a ConfigLayout set as its layout."""
+    def vcontainer(self) -> "ConfigLayout":
+        """Adds (empty) QWidget > ConfigLayout."""
         return self._container(QBoxLayout.TopToBottom)
 
     def _layout(self, direction: QBoxLayout.Direction) -> "ConfigLayout":
