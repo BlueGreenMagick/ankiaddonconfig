@@ -533,7 +533,11 @@ class ConfigLayout(QBoxLayout):
         self.addStretch(factor)
 
     def scroll_layout(
-        self, horizontal: bool = True, vertical: bool = True
+        self,
+        horizontal: bool = True,
+        vertical: bool = True,
+        halways: bool = False,
+        valways: bool = False,
     ) -> "ConfigLayout":
         layout = ConfigLayout(self.config_window, QBoxLayout.TopToBottom)
         inner_widget = QWidget()
@@ -545,5 +549,9 @@ class ConfigLayout(QBoxLayout):
             QSizePolicy.Expanding if horizontal else QSizePolicy.Minimum,
             QSizePolicy.Expanding if vertical else QSizePolicy.Minimum,
         )
+        if halways:
+            scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
+        elif valways:
+            scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
         self.addWidget(scroll)
         return layout
