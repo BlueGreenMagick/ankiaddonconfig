@@ -31,7 +31,11 @@ conf.add_config_tab(general_tab)
 
 When the user opens the config window, a ConfigWindow object is created. Then before it is shown, every function you registered with `conf.add_config_tab` is run. 
 
-Each widget is linked to a single config entry. When the user interacts with a widget and saves it, its corresponding config entry is modified and saved. The config entry key that it will be linked to is passed as the first argument to the input widget. When you have a dictionary inside your config, you can link a config widget to one of its value using `"dict_name.dict_key"`. 
+Each widget is linked to a single config entry. When the user interacts with a widget and saves it, its corresponding config entry is modified and saved in the ConfigManager real-time. The config entry key that it will be linked to is passed as the first argument to the input widget. When you have a dictionary inside your config, you can link a config widget to one of its value using `"dict_name.dict_key"`. The config that ConfigManager stores will be saved to `meta.json` if 'Save' is clicked and discarded if 'Cancel' is clicked.
+
+Each ConfigManager instance stores its own config separately. And its configs are synced with `meta.json` only when `load()` and `save()` is called. This is intended so the config value changing while the add-on is running will not cause unanticipated errors. You should only call `conf.load()` when it is safe to do so. With that in mind, it is recommended to use separate ConfigManager instances for your config window.
+
+
 
 ### Compatibility
 
@@ -66,7 +70,7 @@ def path_input(self, key: str, description: Optional[str] = None, get_directory:
     assert isinstance(conf[key], str)
 ```
 
-List of all widgets:
+Commonly used methods:
 ```python
 def text(self, text: str, bold: bool = False, html: bool = False, size: int = 0, multiline: bool = False) -> QLabel:
     # Text label. `size`: font size
@@ -74,17 +78,12 @@ def space(self, space: int = 1) -> None:
     # Space between widgets
 def stretch(self, factor: int = 0) -> None:
     # Stretch spacing for when window resizes
+def hlayout(self) -> ConfigLayout:
+    # Left to right ConfigLayout
+def vlayout(self) -> ConfigLayout:
+    # Top to bottom ConfigLayout
 ```
 
-List of all layouts:
-```python
-def hlayout(self) -> "ConfigLayout":
-    # Horizontal layout
-def vlayout(self) -> "ConfigLayout":
-    # Vertical layout
-def scroll_layout(self, horizontal: bool = True, vertical: bool = True) -> "ConfigLayout":
-    # Scrollable layout
-```
 ## Using ConfigManager
 ```python
 from .ankiaddon import ConfigManager
