@@ -481,51 +481,49 @@ class ConfigLayout(QBoxLayout):
         self.addWidget(label)
         return label
 
-    def hseparator(self) -> QFrame:
+    def _separator(self, direction: QFrame.Shape) -> QFrame:
+        """direction should be either QFrame.HLine or QFrame.VLine"""
         line = QFrame()
-        line.setFrameShape(QFrame.HLine)
+        line.setFrameShape(direction)
         line.setFrameShadow(QFrame.Plain)
         self.addWidget(line)
         return line
+
+    def hseparator(self) -> QFrame:
+        return self._separator(QFrame.HLine)
 
     def vseparator(self) -> QFrame:
-        line = QFrame()
-        line.setFrameShape(QFrame.VLine)
-        line.setFrameShadow(QFrame.Plain)
-        self.addWidget(line)
-        return line
+        return self._separator(QFrame.VLine)
+
+    def _container(self, direction: QBoxLayout.Direction) -> QWidget:
+        """Adds an empty QWidget that has a ConfigLayout set as its layout.
+
+        You can access its inner layout using QWidget.layout()
+        """
+        container = QWidget()
+        inner_layout = ConfigLayout(self.config_window, direction)
+        container.setLayout(inner_layout)
+        self.addWidget(container)
+        return container
 
     def hcontainer(self) -> QWidget:
-        """Adds an empty QWidget that has a ConfigLayout as its layout.
-
-        You can access its inner layout using QWidget.layout()
-        """
-        container = QWidget()
-        inner_layout = ConfigLayout(self.config_window, QBoxLayout.LeftToRight)
-        container.setLayout(inner_layout)
-        self.addWidget(container)
-        return container
+        """Adds an empty QWidget that has a ConfigLayout set as its layout."""
+        return self._container(QBoxLayout.RightToLeft)
 
     def vcontainer(self) -> QWidget:
-        """Adds an empty QWidget that has a ConfigLayout as its layout.
+        """Adds an empty QWidget that has a ConfigLayout set as its layout."""
+        return self._container(QBoxLayout.TopToBottom)
 
-        You can access its inner layout using QWidget.layout()
-        """
-        container = QWidget()
-        inner_layout = ConfigLayout(self.config_window, QBoxLayout.TopToBottom)
-        container.setLayout(inner_layout)
-        self.addWidget(container)
-        return container
+    def _layout(self, direction: QBoxLayout.Direction) -> "ConfigLayout":
+        layout = ConfigLayout(self.config_window, direction)
+        self.addLayout(layout)
+        return layout
 
     def hlayout(self) -> "ConfigLayout":
-        layout = ConfigLayout(self.config_window, QBoxLayout.LeftToRight)
-        self.addLayout(layout)
-        return layout
+        return self._layout(QBoxLayout.LeftToRight)
 
     def vlayout(self) -> "ConfigLayout":
-        layout = ConfigLayout(self.config_window, QBoxLayout.TopToBottom)
-        self.addLayout(layout)
-        return layout
+        return self._layout(QBoxLayout.TopToBottom)
 
     def space(self, space: int = 1) -> None:
         self.addSpacing(space)
