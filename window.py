@@ -532,12 +532,12 @@ class ConfigLayout(QBoxLayout):
     def stretch(self, factor: int = 0) -> None:
         self.addStretch(factor)
 
-    def scroll_layout(
+    def _scroll_layout(
         self,
-        horizontal: bool = True,
-        vertical: bool = True,
-        halways: bool = False,
-        valways: bool = False,
+        hsizepolicy: QSizePolicy.Policy,
+        vsizepolicy: QSizePolicy.Policy,
+        hscrollbarpolicy: Qt.ScrollBarPolicy,
+        vscrollbarpolicy: Qt.ScrollBarPolicy,
     ) -> "ConfigLayout":
         layout = ConfigLayout(self.config_window, QBoxLayout.TopToBottom)
         inner_widget = QWidget()
@@ -545,13 +545,38 @@ class ConfigLayout(QBoxLayout):
         scroll = QScrollArea()
         scroll.setWidgetResizable(True)
         scroll.setWidget(inner_widget)
-        scroll.setSizePolicy(
-            QSizePolicy.Expanding if horizontal else QSizePolicy.Minimum,
-            QSizePolicy.Expanding if vertical else QSizePolicy.Minimum,
-        )
-        if halways:
-            scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
-        elif valways:
-            scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
+        scroll.setSizePolicy(hsizepolicy, vsizepolicy)
+        scroll.setHorizontalScrollBarPolicy(hscrollbarpolicy)
+        scroll.setVerticalScrollBarPolicy(vscrollbarpolicy)
         self.addWidget(scroll)
         return layout
+
+    def hscroll_layout(self, always: bool = False) -> "ConfigLayout":
+        return self._scroll_layout(
+            QSizePolicy.Expanding,
+            QSizePolicy.Minimum,
+            Qt.ScrollBarAlwaysOn if always else Qt.ScrollBarAsNeeded,
+            Qt.ScrollBarAlwaysOff,
+        )
+
+    def vscroll_layout(self, always: bool = False) -> "ConfigLayout":
+        return self._scroll_layout(
+            QSizePolicy.Minimum,
+            QSizePolicy.Expanding,
+            Qt.ScrollBarAlwaysOff,
+            Qt.ScrollBarAlwaysOn if always else Qt.ScrollBarAsNeeded,
+        )
+
+    def scroll_layout(
+        self,
+        horizontal: bool = True,
+        vertical: bool = True,
+        halways: bool = False,
+        valways: bool = False,
+    ) -> "ConfigLayout":
+        return self._scroll_layout(
+            QSizePolicy.Expanding if horizontal else QSizePolicy.Minimum,
+            QSizePolicy.Expanding if vertical else QSizePolicy.Minimum,
+            Qt.ScrollBarAsNeeded,
+            Qt.ScrollBarAsNeeded,
+        )
