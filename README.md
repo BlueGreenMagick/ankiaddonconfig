@@ -1,6 +1,7 @@
 # ankiaddonconfig
 
 This package was born out of a desire to make creating a gui config window as painless as possible. You can also use it as a shorthand to manage the config as well. To use this package, download(clone) the repo and put it in your addon.
+Used in my add-ons [Edit Field During Review (Cloze)](https://github.com/BlueGreenMagick/Edit-Field-During-Review-Cloze/), [Review Hotmouse](https://github.com/BlueGreenMagick/Review-Hotmouse), and other private add-ons.
 
 ## Creating a custom config window
 
