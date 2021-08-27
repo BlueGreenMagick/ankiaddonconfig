@@ -237,6 +237,20 @@ class ConfigLayout(QBoxLayout):
         self.addWidget(label)
         return label
 
+    def hseparator(self) -> QFrame:
+        line = QFrame()
+        line.setFrameShape(QFrame.HLine)
+        line.setFrameShadow(QFrame.Plain)
+        self.addWidget(line)
+        return line
+
+    def vseparator(self) -> QFrame:
+        line = QFrame()
+        line.setFrameShape(QFrame.VLine)
+        line.setFrameShadow(QFrame.Plain)
+        self.addWidget(line)
+        return line
+
     # Config Input Widgets
 
     def checkbox(
