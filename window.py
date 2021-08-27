@@ -42,25 +42,25 @@ class ConfigWindow(QDialog):
 
     def setup_buttons(self, btn_box: "ConfigLayout") -> None:
 
-        advanced_btn = QPushButton("Advanced")
-        advanced_btn.clicked.connect(self.on_advanced)
-        btn_box.addWidget(advanced_btn)
+        self.advanced_btn = QPushButton("Advanced")
+        self.advanced_btn.clicked.connect(self.on_advanced)
+        btn_box.addWidget(self.advanced_btn)
 
-        reset_btn = QPushButton("Restore Defaults")
-        reset_btn.clicked.connect(self.on_reset)
-        btn_box.addWidget(reset_btn)
+        self.reset_btn = QPushButton("Restore Defaults")
+        self.reset_btn.clicked.connect(self.on_reset)
+        btn_box.addWidget(self.reset_btn)
 
         btn_box.addStretch(1)
 
-        cancel_btn = QPushButton("Cancel")
-        cancel_btn.clicked.connect(self.on_cancel)
-        btn_box.addWidget(cancel_btn)
+        self.cancel_btn = QPushButton("Cancel")
+        self.cancel_btn.clicked.connect(self.on_cancel)
+        btn_box.addWidget(self.cancel_btn)
 
-        save_btn = QPushButton("Save")
-        save_btn.setDefault(True)
-        save_btn.setShortcut("Ctrl+Return")
-        save_btn.clicked.connect(self.on_save)
-        btn_box.addWidget(save_btn)
+        self.save_btn = QPushButton("Save")
+        self.save_btn.setDefault(True)
+        self.save_btn.setShortcut("Ctrl+Return")
+        self.save_btn.clicked.connect(self.on_save)
+        btn_box.addWidget(self.save_btn)
 
     def update_widgets(self) -> None:
         try:
