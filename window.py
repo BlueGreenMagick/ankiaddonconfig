@@ -571,9 +571,8 @@ class ConfigLayout(QBoxLayout):
         self,
         horizontal: bool = True,
         vertical: bool = True,
-        halways: bool = False,
-        valways: bool = False,
     ) -> "ConfigLayout":
+        """Legacy method."""
         return self._scroll_layout(
             QSizePolicy.Expanding if horizontal else QSizePolicy.Minimum,
             QSizePolicy.Expanding if vertical else QSizePolicy.Minimum,
