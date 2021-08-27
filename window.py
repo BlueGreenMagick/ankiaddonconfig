@@ -539,11 +539,14 @@ class ConfigLayout(QBoxLayout):
         hscrollbarpolicy: Qt.ScrollBarPolicy,
         vscrollbarpolicy: Qt.ScrollBarPolicy,
     ) -> "ConfigLayout":
+        """Adds QScrollArea > QWidget*2 > ConfigLayout, returns the layout."""
+        # QScrollArea seems to automatically add a child widget.
         layout = ConfigLayout(self.config_window, QBoxLayout.TopToBottom)
         inner_widget = QWidget()
         inner_widget.setLayout(layout)
         scroll = QScrollArea()
         scroll.setWidgetResizable(True)
+        scroll.setFrameShape(QFrame.NoFrame)
         scroll.setWidget(inner_widget)
         scroll.setSizePolicy(hsizepolicy, vsizepolicy)
         scroll.setHorizontalScrollBarPolicy(hscrollbarpolicy)
@@ -552,6 +555,7 @@ class ConfigLayout(QBoxLayout):
         return layout
 
     def hscroll_layout(self, always: bool = False) -> "ConfigLayout":
+        """Adds QScrollArea > QWidget*2 > ConfigLayout, returns the layout."""
         return self._scroll_layout(
             QSizePolicy.Expanding,
             QSizePolicy.Minimum,
@@ -560,6 +564,7 @@ class ConfigLayout(QBoxLayout):
         )
 
     def vscroll_layout(self, always: bool = False) -> "ConfigLayout":
+        """Adds QScrollArea > QWidget*2 > ConfigLayout, returns the layout."""
         return self._scroll_layout(
             QSizePolicy.Minimum,
             QSizePolicy.Expanding,
@@ -572,7 +577,7 @@ class ConfigLayout(QBoxLayout):
         horizontal: bool = True,
         vertical: bool = True,
     ) -> "ConfigLayout":
-        """Legacy method."""
+        """Legacy. Adds QScrollArea > QWidget*2 > ConfigLayout, returns the layout."""
         return self._scroll_layout(
             QSizePolicy.Expanding if horizontal else QSizePolicy.Minimum,
             QSizePolicy.Expanding if vertical else QSizePolicy.Minimum,
