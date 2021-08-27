@@ -33,6 +33,11 @@ When the user opens the config window, a ConfigWindow object is created. Then be
 
 Each widget is linked to a single config entry. When the user interacts with a widget and saves it, its corresponding config entry is modified and saved. The config entry key that it will be linked to is passed as the first argument to the input widget. When you have a dictionary inside your config, you can link a config widget to one of its value using `"dict_name.dict_key"`. 
 
+### Compatibility
+
+This library is compatible from Anki v2.1.0+. And atleast python v3.6.
+It should also remain compatible with newer Anki versions for a long time.
+
 ### Methods in ConfigLayout
 When you call `ConfigWindow.add_tab(name)`, you get a ConfigLayout object.
 Creating the widgets is done in ConfigLayout. All the below methods are methods of the ConfigLayout.

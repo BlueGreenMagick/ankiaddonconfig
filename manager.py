@@ -13,19 +13,22 @@ class ConfigManager:
         self.config_window: Optional[ConfigWindow] = None
         self.window_open_hook: List[Callable[[ConfigWindow], None]] = []
         self._config: Dict
-        addon_dir = mw.addonManager.addonFromModule(__name__)
+        addon_dir = __name__.split(".")[0]
         self.addon_dir = addon_dir
-        self.addon_name = mw.addonManager.addon_meta(addon_dir).human_name()
+        try:
+            self.addon_name = mw.addonManager.addon_meta(addon_dir).human_name()
+        except:
+            self.addon_name = mw.addonManager.addonName(addon_dir)
         self._default = mw.addonManager.addonConfigDefaults(addon_dir)
         self.load()
 
     def load(self) -> None:
         "Loads config from disk"
-        self._config = mw.addonManager.getConfig(__name__)
+        self._config = mw.addonManager.getConfig(self.addon_dir)
 
     def save(self) -> None:
         "Writes its config data to disk."
-        mw.addonManager.writeConfig(__name__, self._config)
+        mw.addonManager.writeConfig(self.addon_dir, self._config)
 
     def load_defaults(self) -> None:
         "call .save() afterwards to restore defaults."
@@ -119,7 +122,7 @@ class ConfigManager:
         return True
 
     def use_custom_window(self) -> None:
-        mw.addonManager.setConfigAction(__name__, self.open_config)
+        mw.addonManager.setConfigAction(self.addon_dir, self.open_config)
 
     def on_window_open(self, fn: Callable[["ConfigWindow"], None]) -> None:
         self.window_open_hook.append(fn)

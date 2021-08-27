@@ -1,7 +1,6 @@
 from typing import Callable, List, Tuple, TYPE_CHECKING, Optional
 from pathlib import Path
 
-import aqt
 import aqt.addons
 from aqt import mw
 from aqt.qt import *
