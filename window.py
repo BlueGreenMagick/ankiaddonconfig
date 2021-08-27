@@ -484,6 +484,7 @@ class ConfigLayout(QBoxLayout):
     def _separator(self, direction: QFrame.Shape) -> QFrame:
         """direction should be either QFrame.HLine or QFrame.VLine"""
         line = QFrame()
+        line.setLineWidth(0)
         line.setFrameShape(direction)
         line.setFrameShadow(QFrame.Plain)
         self.addWidget(line)
