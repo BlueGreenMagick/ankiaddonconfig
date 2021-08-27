@@ -457,7 +457,7 @@ class ConfigLayout(QBoxLayout):
         self,
         text: str,
         tooltip: str = "",
-        on_click: Optional[Callable[[str], None]] = None,
+        on_click: Optional[Callable] = None,
         color: str = "",
         size: int = 0,
         url: str = "/",
