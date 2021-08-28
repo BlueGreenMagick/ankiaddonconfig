@@ -17,13 +17,14 @@ class ConfigWindow(QDialog):
         QDialog.__init__(self, mw, Qt.Window)  # type: ignore
         self.conf = conf
         self.mgr = mw.addonManager
-        self.setWindowTitle(f"Config for {conf.addon_name}")
-        self.setAttribute(Qt.WA_DeleteOnClose)
         self.widget_updates: List[Callable[[], None]] = []
         self._on_save_hook: List[Callable[[], None]] = []
         self._on_close_hook: List[Callable[[], None]] = []
+        self.geom_key = f"addonconfig-{conf.addon_name}"
+
+        self.setWindowTitle(f"Config for {conf.addon_name}")
+        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setup()
-        restoreGeom(self, f"addonconfig-{conf.addon_name}")
 
     def setup(self) -> None:
         self.outer_layout = ConfigLayout(self, QBoxLayout.TopToBottom)
@@ -92,6 +93,7 @@ class ConfigWindow(QDialog):
 
     def on_open(self) -> None:
         self.update_widgets()
+        restoreGeom(self, self.geom_key)
 
     def on_save(self) -> None:
         for hook in self._on_save_hook:
@@ -123,7 +125,7 @@ class ConfigWindow(QDialog):
         for hook in self._on_close_hook:
             hook()
         self.conf.load()
-        saveGeom(self, f"addonconfig-{self.conf.addon_name}")
+        saveGeom(self, self.geom_key)
         evt.accept()
 
     # Add Widgets
