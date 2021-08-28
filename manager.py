@@ -88,7 +88,10 @@ class ConfigManager:
                 conf_obj = conf_obj[level]
             except KeyError:
                 return None
-        return conf_obj.pop(levels[-1])
+        level = levels[-1]
+        if isinstance(conf_obj, list):
+            level = int(level)
+        return conf_obj.pop(level)
 
     def __getitem__(self, key: str) -> Any:
         return self.get(key)
