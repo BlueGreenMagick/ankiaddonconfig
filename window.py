@@ -467,9 +467,7 @@ class ConfigLayout(QBoxLayout):
 
         on_click is provided 1 argument: 'url'.
         """
-        css = "text-decoration: none;"
-        if color:
-            css += f" color: {color};"
+        css = "text-decoration: none; color: palette(text);"
         if size:
             css += f" font-size: {size}px;"
         label = QLabel(f'<a href="{url}" style="{css}">{text}</a>')
