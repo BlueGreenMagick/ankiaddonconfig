@@ -18,6 +18,7 @@ class ConfigWindow(QDialog):
         self.conf = conf
         self.mgr = mw.addonManager
         self.widget_updates: List[Callable[[], None]] = []
+        self.should_save_hook: List[Callable[], bool] = []
         self._on_save_hook: List[Callable[[], None]] = []
         self._on_close_hook: List[Callable[[], None]] = []
         self.geom_key = f"addonconfig-{conf.addon_name}"
@@ -96,6 +97,9 @@ class ConfigWindow(QDialog):
         restoreGeom(self, self.geom_key)
 
     def on_save(self) -> None:
+        for hook in self.should_save_hook:
+            if not hook():
+                return
         for hook in self._on_save_hook:
             hook()
         self.conf.save()
