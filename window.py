@@ -81,16 +81,14 @@ class ConfigWindow(QDialog):
             bbox.button(QDialogButtonBox.StandardButton.Close).setDefault(True)
 
             def quit() -> None:
-                dial.close()
-                advanced.close()
                 self.widget_updates = []
+                dial.close()
+                advanced.reject()
                 self.close()
 
             button.clicked.connect(quit)
+            dial.setModal(True)
             dial.show()
-            advanced.exec()
-            self.conf.load()
-            self.update_widgets()
 
     def on_open(self) -> None:
         self.update_widgets()
@@ -114,14 +112,19 @@ class ConfigWindow(QDialog):
         tooltip("Press save to save changes")
 
     def on_advanced(self) -> None:
-        self.advanced_window().exec()
-        self.conf.load()
-        self.update_widgets()
+        self.advanced_window()
 
     def advanced_window(self) -> aqt.addons.ConfigEditor:
-        return aqt.addons.ConfigEditor(
+        def on_finish(result: int):
+            self.conf.load()
+            self.update_widgets()
+
+        diag = aqt.addons.ConfigEditor(
             self, self.conf.addon_dir, self.conf._config  # type: ignore
         )
+        diag.finished.connect(on_finish)
+        diag.show()
+        return diag
 
     def closeEvent(self, evt: QCloseEvent) -> None:
         # Discard the contents when clicked cancel,
