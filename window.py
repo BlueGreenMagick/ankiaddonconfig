@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 
 class ConfigWindow(QDialog):
     def __init__(self, conf: "ConfigManager") -> None:
-        QDialog.__init__(self, mw, Qt.Window)  # type: ignore
+        QDialog.__init__(self, mw, Qt.WindowType.Window)  # type: ignore
         self.conf = conf
         self.mgr = mw.addonManager
         self.widget_updates: List[Callable[[], None]] = []
@@ -24,20 +24,20 @@ class ConfigWindow(QDialog):
         self.geom_key = f"addonconfig-{conf.addon_name}"
 
         self.setWindowTitle(f"Config for {conf.addon_name}")
-        self.setAttribute(Qt.WA_DeleteOnClose)
+        self.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose)
         self.setup()
 
     def setup(self) -> None:
-        self.outer_layout = ConfigLayout(self, QBoxLayout.TopToBottom)
-        self.main_layout = ConfigLayout(self, QBoxLayout.TopToBottom)
-        self.btn_layout = ConfigLayout(self, QBoxLayout.LeftToRight)
+        self.outer_layout = ConfigLayout(self, QBoxLayout.Direction.TopToBottom)
+        self.main_layout = ConfigLayout(self, QBoxLayout.Direction.TopToBottom)
+        self.btn_layout = ConfigLayout(self, QBoxLayout.Direction.LeftToRight)
         self.outer_layout.addLayout(self.main_layout)
         self.outer_layout.addLayout(self.btn_layout)
         self.setLayout(self.outer_layout)
 
         self.main_tab = QTabWidget()
         main_tab = self.main_tab
-        main_tab.setFocusPolicy(Qt.StrongFocus)
+        main_tab.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
         self.main_layout.addWidget(main_tab)
         self.setup_buttons(self.btn_layout)
 
@@ -77,8 +77,8 @@ class ConfigWindow(QDialog):
                 run=False,
             )
             button = QPushButton("Quit Config")
-            bbox.addButton(button, QDialogButtonBox.DestructiveRole)
-            bbox.button(QDialogButtonBox.Close).setDefault(True)
+            bbox.addButton(button, QDialogButtonBox.ButtonRole.DestructiveRole)
+            bbox.button(QDialogButtonBox.StandardButton.Close).setDefault(True)
 
             def quit() -> None:
                 dial.close()
@@ -136,7 +136,7 @@ class ConfigWindow(QDialog):
 
     def add_tab(self, name: str) -> "ConfigLayout":
         tab = QWidget(self)
-        layout = ConfigLayout(self, QBoxLayout.TopToBottom)
+        layout = ConfigLayout(self, QBoxLayout.Direction.TopToBottom)
         tab.setLayout(layout)
         self.main_tab.addTab(tab, name)
         return layout
@@ -157,10 +157,10 @@ class ConfigWindow(QDialog):
     ) -> QLabel:
         footer = QLabel(text)
         if html:
-            footer.setTextFormat(Qt.RichText)
+            footer.setTextFormat(Qt.TextFormat.RichText)
             footer.setOpenExternalLinks(True)
         else:
-            footer.setTextFormat(Qt.PlainText)
+            footer.setTextFormat(Qt.TextFormat.PlainText)
         if size:
             font = QFont()
             font.setPixelSize(size)
@@ -201,7 +201,9 @@ class ConfigLayout(QBoxLayout):
 
         self.widget_updates.append(update)
 
-        checkbox.stateChanged.connect(lambda s: self.conf.set(key, s == Qt.Checked))
+        checkbox.stateChanged.connect(
+            lambda s: self.conf.set(key, s == Qt.CheckState.Checked)
+        )
         self.addWidget(checkbox)
         return checkbox
 
@@ -335,7 +337,7 @@ class ConfigLayout(QBoxLayout):
         button = QPushButton()
         button.setFixedWidth(25)
         button.setFixedHeight(25)
-        button.setCursor(QCursor(Qt.PointingHandCursor))
+        button.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         if tooltip is not None:
             button.setToolTip(tooltip)
 
@@ -357,7 +359,7 @@ class ConfigLayout(QBoxLayout):
             set_color(value)
 
         def save(color: QColor) -> None:
-            rgb = color.name(QColor.HexRgb)
+            rgb = color.name(QColor.NameFormat.HexRgb)
             self.conf.set(key, rgb)
             set_color(rgb)
 
@@ -437,12 +439,14 @@ class ConfigLayout(QBoxLayout):
         tooltip: Optional[str] = None,
     ) -> QLabel:
         label_widget = QLabel(text)
-        label_widget.setTextInteractionFlags(Qt.TextBrowserInteraction)
+        label_widget.setTextInteractionFlags(
+            Qt.TextInteractionFlag.TextBrowserInteraction
+        )
         if html:
-            label_widget.setTextFormat(Qt.RichText)
+            label_widget.setTextFormat(Qt.TextFormat.RichText)
             label_widget.setOpenExternalLinks(True)
         else:
-            label_widget.setTextFormat(Qt.PlainText)
+            label_widget.setTextFormat(Qt.TextFormat.PlainText)
         if bold or size:
             font = QFont()
             if bold:
@@ -475,7 +479,7 @@ class ConfigLayout(QBoxLayout):
         if size:
             css += f" font-size: {size}px;"
         label = QLabel(f'<a href="{url}" style="{css}">{text}</a>')
-        label.setTextFormat(Qt.RichText)
+        label.setTextFormat(Qt.TextFormat.RichText)
         if tooltip:
             label.setToolTip(tooltip)
         if on_click:
@@ -489,15 +493,15 @@ class ConfigLayout(QBoxLayout):
         line = QFrame()
         line.setLineWidth(0)
         line.setFrameShape(direction)
-        line.setFrameShadow(QFrame.Plain)
+        line.setFrameShadow(QFrame.Shadow.Plain)
         self.addWidget(line)
         return line
 
     def hseparator(self) -> QFrame:
-        return self._separator(QFrame.HLine)
+        return self._separator(QFrame.Shape.HLine)
 
     def vseparator(self) -> QFrame:
-        return self._separator(QFrame.VLine)
+        return self._separator(QFrame.Shape.VLine)
 
     def _container(self, direction: QBoxLayout.Direction) -> "ConfigLayout":
         """Adds (empty) QWidget > ConfigLayout.
@@ -512,11 +516,11 @@ class ConfigLayout(QBoxLayout):
 
     def hcontainer(self) -> "ConfigLayout":
         """Adds (empty) QWidget > ConfigLayout."""
-        return self._container(QBoxLayout.RightToLeft)
+        return self._container(QBoxLayout.Direction.RightToLeft)
 
     def vcontainer(self) -> "ConfigLayout":
         """Adds (empty) QWidget > ConfigLayout."""
-        return self._container(QBoxLayout.TopToBottom)
+        return self._container(QBoxLayout.Direction.TopToBottom)
 
     def _layout(self, direction: QBoxLayout.Direction) -> "ConfigLayout":
         layout = ConfigLayout(self.config_window, direction)
@@ -524,10 +528,10 @@ class ConfigLayout(QBoxLayout):
         return layout
 
     def hlayout(self) -> "ConfigLayout":
-        return self._layout(QBoxLayout.LeftToRight)
+        return self._layout(QBoxLayout.Direction.LeftToRight)
 
     def vlayout(self) -> "ConfigLayout":
-        return self._layout(QBoxLayout.TopToBottom)
+        return self._layout(QBoxLayout.Direction.TopToBottom)
 
     def space(self, space: int = 1) -> None:
         self.addSpacing(space)
@@ -544,12 +548,12 @@ class ConfigLayout(QBoxLayout):
     ) -> "ConfigLayout":
         """Adds QScrollArea > QWidget*2 > ConfigLayout, returns the layout."""
         # QScrollArea seems to automatically add a child widget.
-        layout = ConfigLayout(self.config_window, QBoxLayout.TopToBottom)
+        layout = ConfigLayout(self.config_window, QBoxLayout.Direction.TopToBottom)
         inner_widget = QWidget()
         inner_widget.setLayout(layout)
         scroll = QScrollArea()
         scroll.setWidgetResizable(True)
-        scroll.setFrameShape(QFrame.NoFrame)
+        scroll.setFrameShape(QFrame.Shape.NoFrame)
         scroll.setWidget(inner_widget)
         scroll.setSizePolicy(hsizepolicy, vsizepolicy)
         scroll.setHorizontalScrollBarPolicy(hscrollbarpolicy)
@@ -559,20 +563,30 @@ class ConfigLayout(QBoxLayout):
 
     def hscroll_layout(self, always: bool = False) -> "ConfigLayout":
         """Adds QScrollArea > QWidget*2 > ConfigLayout, returns the layout."""
+        scroll = (
+            Qt.ScrollBarPolicy.ScrollBarAlwaysOn
+            if always
+            else Qt.ScrollBarPolicy.ScrollBarAsNeeded
+        )
         return self._scroll_layout(
-            QSizePolicy.Expanding,
-            QSizePolicy.Minimum,
-            Qt.ScrollBarAlwaysOn if always else Qt.ScrollBarAsNeeded,
-            Qt.ScrollBarAlwaysOff,
+            QSizePolicy.Policy.Expanding,
+            QSizePolicy.Policy.Minimum,
+            scroll,
+            Qt.ScrollBarPolicy.ScrollBarAlwaysOff,
         )
 
     def vscroll_layout(self, always: bool = False) -> "ConfigLayout":
         """Adds QScrollArea > QWidget*2 > ConfigLayout, returns the layout."""
+        scroll = (
+            Qt.ScrollBarPolicy.ScrollBarAlwaysOn
+            if always
+            else Qt.ScrollBarPolicy.ScrollBarAsNeeded
+        )
         return self._scroll_layout(
-            QSizePolicy.Minimum,
-            QSizePolicy.Expanding,
-            Qt.ScrollBarAlwaysOff,
-            Qt.ScrollBarAlwaysOn if always else Qt.ScrollBarAsNeeded,
+            QSizePolicy.Policy.Minimum,
+            QSizePolicy.Policy.Expanding,
+            Qt.ScrollBarPolicy.ScrollBarAlwaysOff,
+            scroll,
         )
 
     def scroll_layout(
@@ -582,8 +596,8 @@ class ConfigLayout(QBoxLayout):
     ) -> "ConfigLayout":
         """Legacy. Adds QScrollArea > QWidget*2 > ConfigLayout, returns the layout."""
         return self._scroll_layout(
-            QSizePolicy.Expanding if horizontal else QSizePolicy.Minimum,
-            QSizePolicy.Expanding if vertical else QSizePolicy.Minimum,
-            Qt.ScrollBarAsNeeded,
-            Qt.ScrollBarAsNeeded,
+            QSizePolicy.Policy.Expanding if horizontal else QSizePolicy.Policy.Minimum,
+            QSizePolicy.Policy.Expanding if vertical else QSizePolicy.Minimum,
+            Qt.ScrollBarPolicy.ScrollBarAsNeeded,
+            Qt.ScrollBarPolicy.ScrollBarAsNeeded,
         )
