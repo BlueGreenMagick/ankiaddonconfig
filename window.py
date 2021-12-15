@@ -202,7 +202,7 @@ class ConfigLayout(QBoxLayout):
         self.widget_updates.append(update)
 
         checkbox.stateChanged.connect(
-            lambda s: self.conf.set(key, s == Qt.CheckState.Checked)
+            lambda s: self.conf.set(key, s == Qt.CheckState.Checked.value)
         )
         self.addWidget(checkbox)
         return checkbox
