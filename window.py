@@ -88,7 +88,7 @@ class ConfigWindow(QDialog):
 
             button.clicked.connect(quit)
             dial.show()
-            advanced.exec_()
+            advanced.exec()
             self.conf.load()
             self.update_widgets()
 
@@ -114,7 +114,7 @@ class ConfigWindow(QDialog):
         tooltip("Press save to save changes")
 
     def on_advanced(self) -> None:
-        self.advanced_window().exec_()
+        self.advanced_window().exec()
         self.conf.load()
         self.update_widgets()
 
@@ -365,7 +365,7 @@ class ConfigLayout(QBoxLayout):
 
         self.widget_updates.append(update)
         color_dialog.colorSelected.connect(lambda color: save(color))
-        button.clicked.connect(lambda _: color_dialog.exec_())
+        button.clicked.connect(lambda _: color_dialog.exec())
 
         if description is not None:
             row = self.hlayout()
