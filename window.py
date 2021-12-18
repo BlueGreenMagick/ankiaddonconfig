@@ -116,7 +116,7 @@ class ConfigWindow(QDialog):
         self.advanced_window()
 
     def advanced_window(self) -> aqt.addons.ConfigEditor:
-        def on_finish(result: int):
+        def on_finish(result: int) -> None:
             self.conf.load()
             self.update_widgets()
 
