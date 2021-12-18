@@ -11,6 +11,7 @@ from .errors import InvalidConfigValueError
 if TYPE_CHECKING:
     from .manager import ConfigManager
 
+QT6 = QT_VERSION_STR.split(".")[0] == "6"
 
 class ConfigWindow(QDialog):
     def __init__(self, conf: "ConfigManager") -> None:
@@ -204,8 +205,9 @@ class ConfigLayout(QBoxLayout):
 
         self.widget_updates.append(update)
 
+
         checkbox.stateChanged.connect(
-            lambda s: self.conf.set(key, s == Qt.CheckState.Checked.value)
+            lambda s: self.conf.set(key, s == (Qt.CheckState.Checked.value if QT6 else Qt.CheckState.Checked))
         )
         self.addWidget(checkbox)
         return checkbox
