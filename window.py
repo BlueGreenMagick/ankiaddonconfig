@@ -339,9 +339,16 @@ class ConfigLayout(QBoxLayout):
         return spin_box
 
     def color_input(
-        self, key: str, description: Optional[str] = None, tooltip: Optional[str] = None
+        self,
+        key: str,
+        description: Optional[str] = None,
+        tooltip: Optional[str] = None,
+        opacity: bool = False,
     ) -> QPushButton:
-        "For hex color config"
+        """For hex color config.
+        If opacity is true, allows changing opacity. Note that color is stored in RGBA format, not ARGB.
+            When creating using the RGBA in Qt, you need to change it to ARGB format first.
+        """
         button = QPushButton()
         button.setFixedWidth(25)
         button.setFixedHeight(25)
@@ -350,14 +357,19 @@ class ConfigLayout(QBoxLayout):
             button.setToolTip(tooltip)
 
         color_dialog = QColorDialog(self.config_window)
+        if opacity:
+            color_dialog.setOptions(QColorDialog.ShowAlphaChannel)
 
         def set_color(rgb: str) -> None:
+            if len(rgb) == 9:
+                rgb = "#" + rgb[7:] + rgb[1:7]  # RGBA to ARGB
+
             button.setStyleSheet(
                 'QPushButton{ background-color: "%s"; border: none; border-radius: 3px}'
-                % rgb
+                % rgb  # QT bug? CSS accepts ARGB instead of RGBA.
             )
             color = QColor()
-            color.setNamedColor(rgb)
+            color.setNamedColor(rgb)  # Accepts #RGB, #RRGGBB or #AARRGGBB
             if not color.isValid():
                 raise InvalidConfigValueError(key, "rgb hex color string", rgb)
             color_dialog.setCurrentColor(color)
@@ -367,7 +379,11 @@ class ConfigLayout(QBoxLayout):
             set_color(value)
 
         def save(color: QColor) -> None:
-            rgb = color.name(QColor.NameFormat.HexRgb)
+            if opacity:
+                rgb = color.name(QColor.NameFormat.HexArgb)
+                rgb = "#" + rgb[3:] + rgb[1:3]  # ARGB to RGBA
+            else:
+                rgb = color.name()
             self.conf.set(key, rgb)
             set_color(rgb)
 
