@@ -294,9 +294,9 @@ class ConfigLayout(QBoxLayout):
         step: int = 1,
         decimal: bool = False,
         precision: int = 2,
-    ) -> QAbstractSpinBox:
+    ) -> Union[QDoubleSpinBox, QSpinBox]:
         "For integer config"
-        spin_box: QAbstractSpinBox
+        spin_box: Union[QDoubleSpinBox, QSpinBox]
         if decimal:
             spin_box = QDoubleSpinBox()
             spin_box.setDecimals(precision)
