@@ -241,8 +241,8 @@ class ConfigLayout(QBoxLayout):
 
         self.widget_updates.append(update)
 
-        combobox.currentTextChanged.connect(
-            lambda text: self.conf.set(key, text)
+        combobox.currentIndexChanged.connect(
+            lambda idx: self.conf.set(key, values[idx])
         )
 
         if description is not None:
