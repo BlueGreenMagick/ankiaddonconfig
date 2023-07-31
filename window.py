@@ -476,8 +476,6 @@ class ConfigLayout(QBoxLayout):
             lambda s: self.conf.set(key, edit.keySequence().toString())
         )
 
-        self.addWidget(edit)
-
         def on_shortcut_clear_btn_click() -> None:
             edit.clear()
 
