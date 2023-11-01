@@ -387,7 +387,7 @@ class ConfigLayout(QBoxLayout):
         def open_color_dialog() -> None:
             color_dialog = QColorDialog(self.config_window)
             if opacity:
-                color_dialog.setOptions(QColorDialog.ShowAlphaChannel)
+                color_dialog.setOptions(QColorDialog.ColorDialogOption.ShowAlphaChannel)
             color_dialog.setCurrentColor(color)
             color_dialog.colorSelected.connect(lambda c: save(c))
             color_dialog.exec()
@@ -666,7 +666,7 @@ class ConfigLayout(QBoxLayout):
         """Legacy. Adds QScrollArea > QWidget*2 > ConfigLayout, returns the layout."""
         return self._scroll_layout(
             QSizePolicy.Policy.Expanding if horizontal else QSizePolicy.Policy.Minimum,
-            QSizePolicy.Policy.Expanding if vertical else QSizePolicy.Minimum,
+            QSizePolicy.Policy.Expanding if vertical else QSizePolicy.Policy.Minimum,
             Qt.ScrollBarPolicy.ScrollBarAsNeeded,
             Qt.ScrollBarPolicy.ScrollBarAsNeeded,
         )
