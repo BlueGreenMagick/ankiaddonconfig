@@ -44,7 +44,6 @@ class ConfigWindow(QDialog):
         self.setup_buttons(self.btn_layout)
 
     def setup_buttons(self, btn_box: "ConfigLayout") -> None:
-
         self.advanced_btn = QPushButton("Advanced")
         self.advanced_btn.clicked.connect(self.on_advanced)
         btn_box.addWidget(self.advanced_btn)
@@ -209,7 +208,7 @@ class ConfigLayout(QBoxLayout):
         checkbox.stateChanged.connect(
             lambda s: self.conf.set(
                 key,
-                s == (Qt.CheckState.Checked.value if QT6 else Qt.CheckState.Checked), # type: ignore
+                s == (Qt.CheckState.Checked.value if QT6 else Qt.CheckState.Checked),  # type: ignore
             )
         )
         self.addWidget(checkbox)
