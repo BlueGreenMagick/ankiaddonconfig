@@ -26,7 +26,6 @@ class ConfigWindow(QDialog):
         self.geom_key = f"addonconfig-{conf.addon_name}"
 
         self.setWindowTitle(f"Config for {conf.addon_name}")
-        self.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose)
         self.setup()
 
     def setup(self) -> None:
